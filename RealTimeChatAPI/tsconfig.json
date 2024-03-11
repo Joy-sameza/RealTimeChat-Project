@@ -1,0 +1,20 @@
+{
+  "compilerOptions": {
+    "target": "es2022",
+    "module": "es2022",
+    "lib": ["dom","es2021","ScriptHost"],
+    "moduleResolution": "node",
+    "allowJs": true,
+    "downlevelIteration": true,
+    "esModuleInterop": true,
+    "preserveSymlinks": true,
+    "resolveJsonModule": true,
+    "skipLibCheck": true,
+    "sourceMap": true,
+    "useUnknownInCatchVariables": false,
+    "strict": true,
+    "forceConsistentCasingInFileNames": true,
+  },
+  "include": ["src","./config","server.ts","swagger.ts"],
+  "exclude": ["node_modules"]
+}
