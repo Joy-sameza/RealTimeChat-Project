@@ -1,0 +1,31 @@
+{
+  "$schema": "https://typedoc.org/schema.json",
+  "entryPoints": ["./server.ts"],
+  "entryPointStrategy": "expand",
+  "out": "docs",
+  "name": "Real-Time Chat API",
+  "includeVersion": true,
+  "exclude": [
+    "docs/*",
+    "config/*",
+    "node_modules/*",
+    "public/*",
+    "test/*",
+    "Dockerfile",
+    "package-lock.json",
+    "package.json",
+    "swagger.js"
+  ],
+  "excludeExternals": true,
+  "disableSources": false,
+  "includes": "./src/",
+  "watch": false,
+  "preserveWatchOutput": true,
+  "tsconfig": "./tsconfig.json",
+  "hideGenerator": false,
+  "theme": "default",
+  "themeColor": "#cb9820",
+  "readme": "./README.md",
+  "plugin": ["typedoc-material-theme"],
+  "logLevel": "Verbose"
+}
