@@ -48,6 +48,7 @@
     "jsonwebtoken": "^9.0.2",
     "nodemailer": "^6.9.11",
     "socket.io": "^4.7.4",
+    "sqlite3": "^5.1.7",
     "swagger-jsdoc": "^6.2.8",
     "swagger-ui-express": "^5.0.0",
     "ts-node": "^10.9.2",

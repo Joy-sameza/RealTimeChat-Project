@@ -13,23 +13,12 @@ import {
   directus,
 } from "./directuseConection.js";
 
-function verifyMessageAuthor(message: MessageType, userId: number) {
-  return message.id === userId;
-}
-
-function verifyMessageChatroom(message: MessageType, userId: number) {
-  return message.chatroomId === userId;
-}
-
 // rooms
-export async function createNewRoom(newRoomData: ChatRoomType, userId: number) {
-  const { description, name } = newRoomData;
+export async function createNewChatRoom(newRoomData: ChatRoomType) {
   try {
     return await directus.request(
       createItem("chatRooms", {
-        authorId: userId,
-        description: description,
-        name: name,
+        ...newRoomData,
         createdAt: new Date(),
         updatedAt: new Date(),
         locked: false,
@@ -38,48 +27,86 @@ export async function createNewRoom(newRoomData: ChatRoomType, userId: number) {
     );
   } catch (error) {
     throw new Error(
-      `Chatroom Creation failed with error: ${error.message ?? null}`,
+      `Chatroom Creation failed with error: ${error.errors.map((x: { message: string }) => x.message) ?? null}`,
     );
   }
 }
 
-export async function deleteRoomWithId(roomId: number) {
+export async function getAllChatRooms() {
   try {
-    let roomMembersToDelete = await directus.request(
-      readItems("members", {
-        fields: ["id", "chatRoomId"],
-      }),
+    return await directus.request(readItems("chatRooms"));
+  } catch (error) {
+    throw new Error(
+      `Error fetching chatrooms ${error.errors.map((x: { message: string }) => x.message) ?? null}`,
     );
+  }
+}
 
-    //Filter memebers that need to be deleted
-    roomMembersToDelete = roomMembersToDelete.filter(
-      (x) => x.chatRoomId === roomId,
+export async function getAChatRoomById(chatRoomId: number) {
+  try {
+    return await directus.request(readItem("chatRooms", chatRoomId));
+  } catch (error) {
+    throw new Error(
+      `Error fetching the chatroom ${error.errors.map((x: { message: string }) => x.message) ?? null}`,
     );
+  }
+}
+
+export async function updateChatRoomById(
+  chatRoomId: number,
+  chatRoomData: ChatRoomType,
+) {
+  try {
+    return await directus.request(
+      updateItem("chatRooms", chatRoomId, chatRoomData),
+    );
+  } catch (error) {
+    throw new Error(
+      `Error updating the chatroom ${error.errors.map((x: { message: string }) => x.message) ?? null}`,
+    );
+  }
+}
+
+export async function deleteChatRoomWithId(roomId: number) {
+  try {
+    const roomMembersToDelete = await directus
+      .request(
+        readItems("members", {
+          filter: {
+            chatRoomId: roomId,
+          },
+          fields: ["id"],
+        }),
+      )
+      .catch(() => {
+        return [];
+      });
+
+    if (roomMembersToDelete.length > 0) {
+      await directus.request(
+        deleteItems("members", [...roomMembersToDelete.map((x) => x.id)]),
+      );
+    }
 
     return await directus
-      .request(
-        deleteItems("members", [...roomMembersToDelete.map((x) => x.id)]),
-      )
-      .then(async () => {
-        await directus.request(deleteItem("chatRooms", roomId));
-      })
+      .request(deleteItem("chatRooms", roomId))
       .catch((deleteRoomError) => {
         throw deleteRoomError;
       });
   } catch (error) {
     throw new Error(
-      `Chatroom delete failed with error: ${error.message ?? null}`,
+      `Chatroom delete failed with error: ${error.errors.map((x: { message: string }) => x.message) ?? null}`,
     );
   }
 }
 
-export async function getAllMessagesInRoomById(roomId: number) {
+export async function getAllMessagesInChatRoomById(roomId: number) {
   try {
     const roomMessages = await directus.request(readItems("messages"));
-    return roomMessages.filter((x) => x.chatroomId === roomId);
+    return roomMessages.filter((x) => x.chatRoomId === roomId);
   } catch (error) {
     throw new Error(
-      `Error fetching messages for this room ${error.message ?? null}`,
+      `Error fetching messages for this room ${error.errors.map((x: { message: string }) => x.message) ?? null}`,
     );
   }
 }
@@ -90,7 +117,6 @@ export async function createNewMessage(newMessageData: MessageType) {
     return await directus.request(
       createItem("messages", {
         ...newMessageData,
-        attachment: undefined,
         createdAt: new Date(),
         updatedAt: new Date(),
         responseToMessageId: undefined,
@@ -98,95 +124,48 @@ export async function createNewMessage(newMessageData: MessageType) {
     );
   } catch (error) {
     throw new Error(
-      `Chatroom new message creation failed with error: ${error.message}`,
+      `Chatroom new message creation failed with error: ${error.errors.map((x: { message: string }) => x.message)}`,
     );
   }
 }
 
-export async function deleteUsersMessageById(
-  messageId: number,
-  userId: number,
-) {
+export async function deleteUsersMessageById(messageId: number) {
   try {
-    await directus
-      .request(readItem("messages", userId))
-      .then(async (message) => {
-        if (verifyMessageAuthor(message, userId)) {
-          return await directus.request(deleteItem("messages", messageId));
-        } else {
-          throw new Error(
-            "Can not delete this message!, you are not the Author",
-          );
-        }
-      });
+    return await directus.request(deleteItem("messages", messageId));
   } catch (error) {
     throw new Error(
-      `Chatroom message delete failed with error: ${error.message}`,
+      `Chatroom message delete failed with error: ${error.errors.map((x: { message: string }) => x.message)}`,
     );
   }
 }
 
-export async function getUserMessageById(messageId: number, userId: number) {
+export async function getMessageById(messageId: number) {
   try {
-    return await directus
-      .request(readItem("messages", messageId))
-      .then(async (message) => {
-        if (verifyMessageAuthor(message, userId)) {
-          return message;
-        } else {
-          throw new Error("Can not view this message!, you are not the Author");
-        }
-      });
+    return await directus.request(readItem("messages", messageId));
   } catch (error) {
     throw new Error(
-      `Chatroom message view failed with error: ${error.message ?? null}`,
+      `Chatroom message view failed with error: ${error.errors.map((x: { message: string }) => x.message) ?? null}`,
     );
   }
 }
 
-export async function updateUserMessageById(
-  updateMessage: MessageType,
-  userId: number,
-) {
+export async function updateUserMessageById(updateMessage: MessageType) {
   const { id } = updateMessage;
   try {
-    return await directus
-      .request(readItem("messages", userId))
-      .then(async (message) => {
-        if (verifyMessageAuthor(message, userId)) {
-          return await directus.request(
-            updateItem("messages", id, updateMessage),
-          );
-        } else {
-          throw new Error(
-            "Can not update this message!, you are not the Author",
-          );
-        }
-      });
+    return await directus.request(updateItem("messages", id, updateMessage));
   } catch (error) {
     throw new Error(
-      `Chatroom message update failed with error: ${error.message ?? null}`,
+      `Chatroom message update failed with error: ${error.errors.map((x: { message: string }) => x.message) ?? null}`,
     );
   }
 }
 
-export async function getMessageFomChatroomById(
-  chatRoomId: number,
-  messageId: number,
-) {
+export async function getMessageFomChatroomById(messageId: number) {
   try {
-    return directus.request(readItem("messages", messageId)).then((message) => {
-      if (verifyMessageChatroom(message, chatRoomId)) {
-        return message;
-      } else {
-        throw new Error(
-          "Can not view this message!, does not belong to this chat room",
-        );
-      }
-    });
+    return await directus.request(readItem("messages", messageId));
   } catch (error) {
     throw new Error(
-      `Chatroom message view failed with error: ${error.message ?? null}`,
+      `Chatroom message view failed with error: ${error.errors.map((x: { message: string }) => x.message) ?? null}`,
     );
   }
 }
@@ -200,44 +179,60 @@ export async function createUser(userData: UserType) {
         createdAt: new Date(),
         updatedAt: new Date(),
         verified: false,
+        role: "user",
+        status: "online",
       }),
     );
   } catch (error) {
-    throw new Error(`Could not create user ${error.message ?? null}`);
+    throw new Error(
+      `Could not create user ${error.errors.map((x: { message: string }) => x.message) ?? null}`,
+    );
   }
 }
 export async function updateDataOnUserById(userId: number, userData: UserType) {
   try {
     return await directus.request(updateItem("users", userId, userData));
   } catch (error) {
-    throw new Error(`Could not update user ${error.message ?? null}`);
+    throw new Error(
+      `Could not update user ${error.errors.map((x: { message: string }) => x.message) ?? null}`,
+    );
   }
 }
 export async function getDataOnUserWithEmail(email: string) {
   try {
-    return await directus.request(readItem("users", email));
+    return await directus.request(
+      readItems("users", { search: email, limit: 1 }),
+    );
   } catch (error) {
-    throw new Error(`Could not get user data ${error.message ?? null}`);
+    throw new Error(
+      `Could not get user data ${error.errors.map((x: { message: string }) => x.message) ?? null}`,
+    );
   }
 }
 export async function getAllUsersData() {
   try {
     return await directus.request(readItems("users"));
   } catch (error) {
-    throw new Error(`Could not get all users ${error.message ?? null}`);
+    throw new Error(
+      `Could not get all users ${error.errors.map((x: { message: string }) => x.message) ?? null}`,
+    );
   }
 }
 export async function getDataOnUserById(userId: number) {
   try {
     return await directus.request(readItem("users", userId));
   } catch (error) {
-    throw new Error(`Could not get user ${error.message ?? null}`);
+    throw new Error(
+      `Could not get user ${error.errors.map((x: { message: string }) => x.message) ?? null}`,
+    );
   }
 }
 export async function deleteUsersAccountById(userId: number) {
   try {
     return await directus.request(deleteItem("users", userId));
   } catch (error) {
-    throw new Error(`Could not delete user ${error.message ?? null}`);
+    throw new Error(
+      `Could not delete user ${error.errors.map((x: { message: string }) => x.message) ?? null}`,
+    );
   }
 }

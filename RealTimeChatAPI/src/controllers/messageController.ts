@@ -3,7 +3,8 @@ import {
   createNewMessage,
   deleteUsersMessageById,
   getMessageFomChatroomById,
-  getUserMessageById,
+  getMessageById,
+  updateUserMessageById,
 } from "../directus/directusCrud.js";
 
 export async function createMessage(req: Request, res: Response) {
@@ -17,19 +18,17 @@ export async function createMessage(req: Request, res: Response) {
     });
     return;
   } catch (error) {
-    throw new Error(
-      `message Controller, error creating message ${error.message ?? null}`,
-    );
+    res.status(400).json({
+      message: `message Controller, error creating message ${error.message ?? null}`,
+      data: null,
+    });
   }
 }
 
 export async function getMessagesInChatroomById(req: Request, res: Response) {
   try {
-    const { chatRoomId, messageId } = req.params;
-    await getMessageFomChatroomById(
-      parseInt(chatRoomId),
-      parseInt(messageId),
-    ).then((message) => {
+    const { messageId } = req.params;
+    await getMessageFomChatroomById(parseInt(messageId)).then((message) => {
       res.json({
         message: "Message fetched Successfully",
         data: message,
@@ -37,60 +36,59 @@ export async function getMessagesInChatroomById(req: Request, res: Response) {
       return;
     });
   } catch (error) {
-    throw new Error(
-      `messageControlloer, error fetching message ${error.message ?? null}`,
-    );
+    res.status(400).json({
+      message: `messageControlloer, error fetching message ${error.message ?? null}`,
+      data: null,
+    });
   }
 }
 
 export async function getMessagesForUserById(req: Request, res: Response) {
   try {
-    const { userId, messageId } = req.params;
-    await getUserMessageById(parseInt(messageId), parseInt(userId)).then(
-      (message) => {
-        res.json({
-          message: "Message fetched Successfully",
-          data: message,
-        });
-      },
-    );
+    const { messageId } = req.params;
+    await getMessageById(parseInt(messageId)).then((message) => {
+      res.json({
+        message: "Message fetched Successfully",
+        data: message,
+      });
+    });
   } catch (error) {
-    throw new Error(
-      `messageControlloer, error fetching message ${error.message ?? null}`,
-    );
+    res.status(400).json({
+      message: `messageControlloer, error fetching message ${error.message ?? null}`,
+      data: null,
+    });
   }
 }
 
-export async function updateUserMessageById(req: Request, res: Response) {
+export async function updateMessageById(req: Request, res: Response) {
   try {
-    const { message, userId } = req.body;
-    await updateUserMessageById(message, userId).then((updatedMessage) => {
+    await updateUserMessageById(req.body).then((updatedMessage) => {
       res.json({
         message: "Message updated successfully",
         data: updatedMessage,
       });
     });
   } catch (error) {
-    throw new Error(
-      `messageControlloer, error updating message ${error.message ?? null}`,
-    );
+    res.status(400).json({
+      message: `messageControlloer, error updating message ${error.message ?? null}`,
+      data: null,
+    });
   }
 }
 
 export async function deleteAUserMessageById(req: Request, res: Response) {
   try {
-    const { userId, messageId } = req.params;
-    await deleteUsersMessageById(parseInt(messageId), parseInt(userId)).then(
-      () => {
-        res.json({
-          message: "message deleted sucessfully",
-          data: null,
-        });
-      },
-    );
+    const { messageId } = req.params;
+    await deleteUsersMessageById(parseInt(messageId)).then(() => {
+      res.json({
+        message: "message deleted sucessfully",
+        data: null,
+      });
+    });
   } catch (error) {
-    throw new Error(
-      `messageController, error deleting message ${error.message ?? null}`,
-    );
+    res.status(400).json({
+      message: `messageController, error deleting message ${error.message ?? null}`,
+      data: null,
+    });
   }
 }

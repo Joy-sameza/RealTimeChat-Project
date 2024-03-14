@@ -1,5 +1,5 @@
 import express from "express";
-import { Server as NodeServer } from "node:http";
+import { createServer } from "node:http";
 import cors from "cors";
 import swaggerDocs from "./swagger.js";
 import { Server as SocketIoServer } from "socket.io";
@@ -7,37 +7,37 @@ import userRoutes from "./src/routes/userRoutes.js";
 import chatRoomRoutes from "./src/routes/chatRoomRoutes.js";
 import messageRoutes from "./src/routes/messagesRoutes.js";
 import realTimeChatManagment from "./src/chatSystem/chatLogic.js";
-
-const PORT = 4000;
-const HOST = "localhost";
-const SERVER_URL = `http://${HOST}:${PORT}`;
+import { SERVER_HOST, SERVER_PORT } from "./config/config.js";
+import { loggIncommingRequests } from "./src/middlewares/loggerMiddleware.js";
 
 const server = express();
-const nodeApp = new NodeServer(server);
-const io = new SocketIoServer(nodeApp);
+const nodeApp = createServer(server);
+const io = new SocketIoServer(nodeApp, { cors: { origin: "*" } });
 
 server.use(express.json());
 server.use(cors());
+server.use("/", loggIncommingRequests);
 server.use("/maintainance", express.static("docs"));
-server.use("/user", userRoutes);
-server.use("/chatroom", chatRoomRoutes);
-server.use("/message", messageRoutes);
+server.use("/api/user", userRoutes);
+server.use("/api/chatroom", chatRoomRoutes);
+server.use("/api/message", messageRoutes);
 
 io.on("connection", (socket) => {
+  console.log("connected");
   realTimeChatManagment(socket);
 });
 
 async function startServer() {
   try {
-    server.listen(PORT, HOST, () => {
+    nodeApp.listen(parseInt(SERVER_PORT), SERVER_HOST, async () => {
       swaggerDocs(server);
       console.info(
         `
         🗜   db connected    
         🚀  Server is running!    
-        💬  Real-Time Chat server listening at ${SERVER_URL}/api
-        📝  Real-Time Chat server documents at ${SERVER_URL}/docs
-        📚  Real-Time Chat server maintainance documnets at ${SERVER_URL}/maintainance`,
+        💬  Real-Time Chat server listening at http://${SERVER_HOST}:${SERVER_PORT}/api
+        📝  Real-Time Chat server documents at http://${SERVER_HOST}:${SERVER_PORT}/docs
+        📚  Real-Time Chat server maintainance documnets at http://${SERVER_HOST}:${SERVER_PORT}/maintainance`,
       );
     });
   } catch (serverConnectionError) {

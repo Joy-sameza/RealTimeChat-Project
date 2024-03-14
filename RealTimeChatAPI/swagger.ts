@@ -28,11 +28,11 @@ const options = {
     },
     servers: [
       {
-        url: "http://localhost:8000/",
+        url: "http://localhost:4000/",
         description: "Local Server",
       },
       {
-        url: "http://localhost:8000/",
+        url: "http://localhost:4000/",
         description: "Live Server",
       },
     ],
@@ -43,7 +43,13 @@ const options = {
 const swaggerSpec = swaggerJsdoc(options);
 
 function swaggerDocs(server: Express) {
-  server.use("/docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
+  server.use(
+    "/docs",
+    swaggerUi.serve,
+    swaggerUi.setup(swaggerSpec, {
+      customCss: `.swagger-ui * { font-family: 'Inter' !important; font-weight: 500}`,
+    }),
+  );
   server.get("/docs.json", (_, res) => {
     res.setHeader("Content-Type", "application/json");
     res.send(swaggerSpec);

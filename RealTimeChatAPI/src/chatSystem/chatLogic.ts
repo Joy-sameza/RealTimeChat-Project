@@ -1,8 +1,8 @@
 import { Socket } from "socket.io";
 import {
   createNewMessage,
-  createNewRoom,
-  deleteRoomWithId,
+  createNewChatRoom,
+  deleteChatRoomWithId,
   deleteUsersMessageById,
 } from "../directus/directusCrud.js";
 
@@ -11,8 +11,8 @@ function realTimeChatManagment(socket: Socket) {
    * This event is triggered when a regular user creates a new chatroom
    * This action sends back an acknowledgment to the user on successfull creation of the chatroom
    */
-  socket.on("createRoom", async (userId, newRoomData, callBack) => {
-    await createNewRoom(newRoomData, userId)
+  socket.on("createRoom", async (newRoomData, callBack) => {
+    await createNewChatRoom(newRoomData)
       .then((newRoom) => {
         callBack(`${newRoom.name} was created`);
       })
@@ -26,7 +26,7 @@ function realTimeChatManagment(socket: Socket) {
    * This action sends back an acknowledgment on successfull deletion of the chatroom
    */
   socket.on("deleteRoom", async (roomId, callBack) => {
-    await deleteRoomWithId(roomId)
+    await deleteChatRoomWithId(roomId)
       .then(() => {
         callBack("Room Deleted");
       })
@@ -78,7 +78,7 @@ function realTimeChatManagment(socket: Socket) {
    * The user recives and acknowledgement upon successfull submition of the message to all users in the room.
    */
   socket.on("deleteMessage", async (messageId, userId, callBack) => {
-    await deleteUsersMessageById(messageId, userId)
+    await deleteUsersMessageById(messageId)
       .then(() => {
         callBack("message was deleted");
       })

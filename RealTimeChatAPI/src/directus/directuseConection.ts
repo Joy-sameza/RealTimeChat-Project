@@ -1,4 +1,21 @@
-import { createDirectus, rest } from "@directus/sdk";
+import {
+  authentication,
+  createCollection,
+  createDirectus,
+  readCollections,
+  rest,
+} from "@directus/sdk";
+import {
+  userCollection,
+  chatRoomsCollection,
+  messagesCollection,
+} from "../database/directusCollection.js";
+import {
+  DIRECTUS_ADMIN_EMAIL,
+  DIRECTUS_ADMIN_PASSWORD,
+  DIRECTUS_HOST,
+  DIRECTUS_PORT,
+} from "../../config/config.js";
 
 export interface ChatRoomType {
   id: number;
@@ -36,8 +53,7 @@ export interface MessageType {
   id: number;
   content: string;
   senderId: number | UserType;
-  chatroomId: number | ChatRoomType;
-  attachment: File;
+  chatRoomId: number | ChatRoomType;
   createdAt: Date;
   updatedAt: Date;
   responseToMessageId: number | MemeberType;
@@ -51,5 +67,46 @@ export interface SchemaType {
 }
 
 export const directus = createDirectus<SchemaType>(
-  `http://localhost:8055`,
-).with(rest());
+  `http://${DIRECTUS_HOST}:${DIRECTUS_PORT}`,
+)
+  .with(authentication("json"))
+  .with(rest());
+
+await directus
+  .login(DIRECTUS_ADMIN_EMAIL, DIRECTUS_ADMIN_PASSWORD)
+  .then(async () => {
+    await directus.request(readCollections()).then(async (res) => {
+      const collectionList = res.map((x) => x.collection);
+      if (!collectionList.includes("users")) {
+        await directus
+          .request(createCollection(userCollection))
+          .then(() => {
+            console.log(" user collection created");
+          })
+          .catch((err) => {
+            console.log(err.errors.map((x: { message: string }) => x.message));
+          });
+      }
+
+      if (!collectionList.includes("chatRooms")) {
+        await directus
+          .request(createCollection(chatRoomsCollection))
+          .then(() => {
+            console.log("chatroom collection created");
+          })
+          .catch((err) => {
+            console.log(err.errors.map((x: { message: string }) => x.message));
+          });
+      }
+      if (!collectionList.includes("messages")) {
+        await directus
+          .request(createCollection(messagesCollection))
+          .then(() => {
+            console.log("messages collection created");
+          })
+          .catch((err) => {
+            console.log(err.errors.map((x: { message: string }) => x.message));
+          });
+      }
+    });
+  });
