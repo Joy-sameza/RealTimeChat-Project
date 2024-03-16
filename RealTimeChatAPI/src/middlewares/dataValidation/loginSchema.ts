@@ -1,5 +1,8 @@
 import { z } from "zod";
 
+/**
+ * @description User login data validation schema stating that the email and password are required with the password passing this regular expression check
+ */
 export const loginSchema = z
   .object({
     email: z.string(),

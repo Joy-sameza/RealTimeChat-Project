@@ -1,25 +1,21 @@
 import { NextFunction, Request, Response } from "express";
 import jwt from "jsonwebtoken";
 import { ENCRIPTION_SECRET_KEY } from "../../config/config.js";
+import { sendErrorToClient } from "../utils/sendAndLogError.js";
 
-export function getTokenValue(str: string, tokenName: string): string | null {
-  const name = tokenName + "=";
-  const parts = str.split(";");
-  for (let i = 0; i < parts.length; i++) {
-    const part = parts[i].trim();
-    if (part.indexOf(name) === 0) {
-      return part.substring(name.length, part.length);
-    }
-  }
-  return null;
-}
-
+/**
+ * @description Verifies if the user is logedIn and grant access to the ressouce. If not, clears the token cookie and request the client to login
+ * @param {Request} req - Express request object
+ * @param {Response} res - Express response object
+ * @param {NextFunction} next - Next function
+ */
 export function isLogedIn(req: Request, res: Response, next: NextFunction) {
   try {
-    const { cookie } = req.headers;
-    const token = getTokenValue(cookie!, "token");
+    const token = req.cookies.token;
+
     if (token) {
       const userData = jwt.verify(token, ENCRIPTION_SECRET_KEY);
+
       if (userData) {
         next();
       }
@@ -27,17 +23,7 @@ export function isLogedIn(req: Request, res: Response, next: NextFunction) {
       throw new Error("no token");
     }
   } catch (error) {
-    res.clearCookie("token").json({
-      message: "You are not logedin, please SigneIn first",
-      data: null,
-    });
+    res.cookie("token", "", { maxAge: 0 });
+    sendErrorToClient(res, "Access denied, Please login", error);
   }
-}
-
-export function getToken(data: { id: number; role: string }) {
-  return jwt.sign(data, ENCRIPTION_SECRET_KEY, {
-    algorithm: "HS256",
-    allowInsecureKeySizes: true,
-    expiresIn: "1d",
-  });
 }

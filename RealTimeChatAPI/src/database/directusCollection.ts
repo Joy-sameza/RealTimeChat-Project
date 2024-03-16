@@ -1,3 +1,6 @@
+/**
+ * Users collection, used by directus to create the users table
+ */
 export const userCollection = {
   collection: "users",
   meta: {
@@ -17,7 +20,7 @@ export const userCollection = {
         translation: "Gebruikers",
       },
     ],
-    archive_field: "status",
+    archive_field: "userName",
     archive_value: "archived",
     unarchive_value: "draft",
     archive_app_filter: true,
@@ -80,6 +83,14 @@ export const userCollection = {
       },
     },
     {
+      field: "gender",
+      type: "string",
+      schema: {
+        is_primary_key: false,
+        is_nullable: true,
+      },
+    },
+    {
       field: "verified",
       type: "boolean",
       schema: {
@@ -103,27 +114,11 @@ export const userCollection = {
         is_nullable: false,
       },
     },
-    {
-      field: "lastLogin",
-      type: "date",
-      schema: {
-        is_primary_key: false,
-        is_nullable: true,
-      },
-    },
-    {
-      field: "status",
-      type: "string",
-      schema: {
-        is_primary_key: false,
-        is_nullable: false,
-      },
-    },
   ],
 };
 
 /**
- * Chat room model
+ * Chatroom collection, used by directus to create the chatroom table
  */
 export const chatRoomsCollection = {
   collection: "chatRooms",
@@ -193,6 +188,14 @@ export const chatRoomsCollection = {
       },
     },
     {
+      field: "profilePicture",
+      type: "string",
+      schema: {
+        is_primary_key: false,
+        is_nullable: true,
+      },
+    },
+    {
       field: "createdAt",
       type: "date",
       schema: {
@@ -228,9 +231,8 @@ export const chatRoomsCollection = {
 };
 
 /**
- * messages collection
+ * Message collection, used by directus to create the message table
  */
-
 export const messagesCollection = {
   collection: "messages",
   meta: {
@@ -324,6 +326,71 @@ export const messagesCollection = {
         is_nullable: true,
         foreign_key_column: "id",
         foreign_key_table: "messages",
+      },
+    },
+  ],
+};
+
+/**
+ * member collection, used by directus to create the member table
+ */
+export const membersCollection = {
+  collection: "members",
+  meta: {
+    collection: "members",
+    icon: "message",
+    note: "A collection for members",
+    display_template: "{{ content }}",
+    hidden: false,
+    singleton: false,
+    translations: [
+      {
+        language: "en-US",
+        translation: "members",
+      },
+      {
+        language: "nl-NL",
+        translation: "Berichten",
+      },
+    ],
+    archive_field: "userId",
+    archive_value: "archived",
+    unarchive_value: "draft",
+    archive_app_filter: true,
+    sort_field: "id",
+    item_duplication_fields: null,
+    sort: 1,
+  },
+  schema: {
+    name: "members",
+    comment: "Table for storing members",
+  },
+  fields: [
+    {
+      field: "id",
+      type: "integer",
+      schema: {
+        is_primary_key: true,
+        is_nullable: false,
+        has_auto_increment: true,
+      },
+    },
+    {
+      field: "userId",
+      type: "string",
+      schema: {
+        is_primary_key: false,
+        is_nullable: false,
+      },
+    },
+    {
+      field: "chatRoomId",
+      type: "integer",
+      schema: {
+        is_primary_key: false,
+        is_nullable: false,
+        foreign_key_column: "id",
+        foreign_key_table: "chatRooms",
       },
     },
   ],

@@ -3,8 +3,8 @@ import {
   createMessage,
   deleteAUserMessageById,
   getMessagesForUserById,
-  getMessagesInChatroomById,
   updateMessageById,
+  getMessagesInChatroomById,
 } from "../controllers/messageController.js";
 import { isLogedIn } from "../middlewares/authMiddleware.js";
 import { isAdminOrAuthor } from "../middlewares/roleMiddleWare.js";
@@ -18,7 +18,7 @@ const messageRoutes = Router();
  *  post:
  *     tags:
  *     - Message EndPoints
- *     summary: Login as a user
+ *     summary: Create a message with the required data
  *     requestBody:
  *      required: true
  *      content:
@@ -44,7 +44,7 @@ const messageRoutes = Router();
  *                default: none
  *     responses:
  *      201:
- *        description: Created
+ *        description: Message created
  *      409:
  *        description: Conflict
  *      404:
@@ -60,23 +60,23 @@ messageRoutes.post(
 
 /**
  * @openapi
- * '/api/message/get/messagein/{chatRoomId}/{messageId}':
+ * '/api/message/get/messages/{chatRoomId}':
  *  get:
  *     tags:
  *     - Message EndPoints
- *     summary: Retrives a message in a chatroom
+ *     summary: Retrives all message in a chatroom only if the request comes from an authenticated user
  *     parameters:
  *      - name: chatRoomId
  *        in: path
- *        description: The chatrooId of the message
+ *        description: The Id of the message
  *        required: true
  *      - name: messageId
  *        in: path
- *        description: The messageId of the message
+ *        description: The Id of the message
  *        required: true
  *     responses:
  *      200:
- *        description: Loged out Successfully
+ *        description: request succesful
  *      400:
  *        description: Bad Request
  *      404:
@@ -85,7 +85,7 @@ messageRoutes.post(
  *        description: Server Error
  */
 messageRoutes.get(
-  "/get/messagein/:chatRoomId/:messageId",
+  "/get/messages/:chatRoomId",
   [isLogedIn],
   getMessagesInChatroomById,
 );
@@ -96,19 +96,19 @@ messageRoutes.get(
  *  get:
  *     tags:
  *     - Message EndPoints
- *     summary: Retrives a users message by id
+ *     summary: Retrives all the messages of the users with the corresponding id, only if the request comes from an authenticated, and  an admin or the author of the message.
  *     parameters:
  *      - name: userId
  *        in: path
- *        description: The userId of the user
+ *        description: The Id of the user
  *        required: true
  *      - name: messageId
  *        in: path
- *        description: The userId of the user
+ *        description: The messageId of the message to modify
  *        required: true
  *     responses:
  *      200:
- *        description: Loged out Successfully
+ *        description: request succesful
  *      400:
  *        description: Bad Request
  *      404:
@@ -128,11 +128,11 @@ messageRoutes.get(
  *  put:
  *     tags:
  *     - Message EndPoints
- *     summary: Modify a users message
+ *     summary: Modify a users message only if the request comes from an authenticated user, and  an admin or the author of the message. the data is modified only it passes the data valdation test
  *     parameters:
  *      - name: messageId
  *        in: path
- *        description: The userId of the user
+ *        description: The Id of the message
  *        required: true
  *     requestBody:
  *      required: true
@@ -154,7 +154,7 @@ messageRoutes.get(
  *                default: 'user'
  *     responses:
  *      200:
- *        description: Modified
+ *        description: request succesful
  *      400:
  *        description: Bad Request
  *      404:
@@ -174,19 +174,19 @@ messageRoutes.put(
  *  delete:
  *     tags:
  *     - Message EndPoints
- *     summary: Delete a users message by Id
+ *     summary: Delete a users message by Id only if the request comes from an authenticated user, and  an admin or the author of the message.
  *     parameters:
  *      - name: userId
  *        in: path
- *        description: The unique Id of the user
+ *        description: The Id of the user
  *        required: true
  *      - name: messageId
  *        in: path
- *        description: The unique Id of the user
+ *        description: The Id of the user
  *        required: true
  *     responses:
  *      200:
- *        description: Removed
+ *        description: request succesful
  *      400:
  *        description: Bad request
  *      404:

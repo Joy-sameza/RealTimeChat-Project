@@ -3,6 +3,7 @@ import {
   createChatRoom,
   deleteAChatRoom,
   getAChatRoom,
+  getChatRoomUsers,
   getChatRooms,
   updateAChatRoom,
 } from "../controllers/chatRoomController.js";
@@ -18,7 +19,7 @@ const chatRoomRoutes = Router();
  *  post:
  *     tags:
  *     - ChatRoom EndPoints
- *     summary: Creating a chat room
+ *     summary: Creating a chat room only if the request comes from an authenticated user. and the data is valid.
  *     requestBody:
  *      required: true
  *      content:
@@ -48,8 +49,8 @@ const chatRoomRoutes = Router();
  *                type: boolen
  *                default: true
  *     responses:
- *      201:
- *        description: Created
+ *      200:
+ *        description: request succesful
  *      409:
  *        description: Conflict
  *      404:
@@ -69,10 +70,10 @@ chatRoomRoutes.post(
  *  get:
  *     tags:
  *     - ChatRoom EndPoints
- *     summary: Retrives all user
+ *     summary: Fetch all chatrooms aveilable only if the request comes from an authenticated user.
  *     responses:
  *      200:
- *        description: Data retrived Successfully
+ *        description: request succesful
  *      400:
  *        description: Bad Request
  *      404:
@@ -84,15 +85,34 @@ chatRoomRoutes.get("/get/all", [isLogedIn], getChatRooms);
 
 /**
  * @openapi
+ * '/api/chatroom/get/users/:chatRoomId':
+ *  get:
+ *     tags:
+ *     - ChatRoom EndPoints
+ *     summary: Fetch chatroom users only if the request comes from an authenticated user.
+ *     responses:
+ *      200:
+ *        description: request succesful
+ *      400:
+ *        description: Bad Request
+ *      404:
+ *        description: Not Found
+ *      500:
+ *        description: Server Error
+ */
+chatRoomRoutes.get("/get/users/:chatRoomId", [isLogedIn], getChatRoomUsers);
+
+/**
+ * @openapi
  * '/api/chatroom/get/{chatRoomId}':
  *  get:
  *     tags:
  *     - ChatRoom EndPoints
- *     summary: Retrives a Chatroom data with chatRoomId
+ *     summary: Fetch a Chatroom data with the corresponding Id, only if the request comes from an authenticated user.
  *     parameters:
  *      - name: chatRoomId
  *        in: path
- *        description: The userId of the user
+ *        description: The chatroomId of the chatroom
  *        required: true
  *     responses:
  *      200:
@@ -112,11 +132,11 @@ chatRoomRoutes.get("/get/:chatRoomId", [isLogedIn], getAChatRoom);
  *  put:
  *     tags:
  *     - ChatRoom EndPoints
- *     summary: Modify a Chatroom's data
+ *     summary: Modify a Chatroom's data only if the request comes from an authenticated user, and  an admin or the author of the message. the data is must passes the data validation
  *     parameters:
  *      - name: chatRoomId
  *        in: path
- *        description: The userId of the user
+ *        description: The Id of the chatroom
  *        required: true
  *     requestBody:
  *      required: true
@@ -144,7 +164,7 @@ chatRoomRoutes.get("/get/:chatRoomId", [isLogedIn], getAChatRoom);
  *                default: true
  *     responses:
  *      200:
- *        description: Modified
+ *        description: request succesful
  *      400:
  *        description: Bad Request
  *      404:
@@ -164,7 +184,7 @@ chatRoomRoutes.put(
  *  delete:
  *     tags:
  *     - ChatRoom EndPoints
- *     summary: Delete a Chatroom by Id
+ *     summary: Delete a Chatroom with the corresponding Id, only if the request comes from an authenticated user, and  an admin or the author of the message.
  *     parameters:
  *      - name: chatRoomId
  *        in: path
@@ -172,7 +192,7 @@ chatRoomRoutes.put(
  *        required: true
  *     responses:
  *      200:
- *        description: Removed
+ *        description: request succesful
  *      400:
  *        description: Bad request
  *      404:

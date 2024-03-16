@@ -1,6 +1,7 @@
 import express from "express";
 import { createServer } from "node:http";
 import cors from "cors";
+import cookieParser from "cookie-parser";
 import swaggerDocs from "./swagger.js";
 import { Server as SocketIoServer } from "socket.io";
 import userRoutes from "./src/routes/userRoutes.js";
@@ -9,22 +10,63 @@ import messageRoutes from "./src/routes/messagesRoutes.js";
 import realTimeChatManagment from "./src/chatSystem/chatLogic.js";
 import { SERVER_HOST, SERVER_PORT } from "./config/config.js";
 import { loggIncommingRequests } from "./src/middlewares/loggerMiddleware.js";
+import adminRoutes from "./src/routes/adminRoutes.js";
 
 const server = express();
 const nodeApp = createServer(server);
-const io = new SocketIoServer(nodeApp, { cors: { origin: "*" } });
+export const io = new SocketIoServer(nodeApp, { cors: { origin: "*" } });
 
 server.use(express.json());
-server.use(cors());
+server.use(cors({ origin: "*" }));
+server.use(cookieParser());
 server.use("/", loggIncommingRequests);
 server.use("/maintainance", express.static("docs"));
+server.use("/api/admin", adminRoutes);
 server.use("/api/user", userRoutes);
 server.use("/api/chatroom", chatRoomRoutes);
 server.use("/api/message", messageRoutes);
 
+const socketMap: Partial<{ userId: string; value: string } | never>[] = [];
+const roomMap: string[] = [];
+
+// export function socketChatRoomSocketId(chatRoomId){
+//   // chatRoomId
+// }
+
 io.on("connection", (socket) => {
-  console.log("connected");
+  const userId = socket.handshake.query.userId?.toString();
+  if (userId !== undefined) socketMap.push({ userId, value: socket.id });
+  console.log(socketMap.map((x) => x.userId));
+  io.emit(
+    "getOnlineUsers",
+    socketMap.map((x) => x.userId),
+  );
+
+  socket.on("joinRoom", (roomId) => {
+    console.log(socket.rooms.has(roomId));
+    if (!socket.rooms.has(roomId)) {
+      console.log(roomId, "room join");
+      roomMap.push(roomId);
+      socket.join(roomId);
+      socket.to(roomId).emit("joinRoom", "new member");
+    }
+  });
+
+  socket.on("leaveRoom", (roomId, user) => {
+    if (socket.rooms.has(roomId)) {
+      console.log(roomId, "room out");
+      roomMap.filter((x) => x !== roomId);
+      socket.leave(roomId);
+      socket.to(roomId).emit("leaveRoom", `${user} left`);
+    }
+  });
+
   realTimeChatManagment(socket);
+
+  socket.on("disconnect", () => {
+    if (userId !== undefined) socketMap.filter((x) => x.userId !== userId);
+    io.emit("getOnlineUsers", Object.keys(socketMap));
+  });
 });
 
 async function startServer() {

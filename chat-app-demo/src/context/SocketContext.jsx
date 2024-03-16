@@ -15,9 +15,9 @@ export const SocketContextProvider = ({ children }) => {
 
   useEffect(() => {
     if (authUser) {
-      const socket = io("https://chat-app-yt.onrender.com", {
+      const socket = io("http://localhost:4000", {
         query: {
-          userId: authUser._id,
+          userId: authUser.id,
         },
       });
 
@@ -25,6 +25,7 @@ export const SocketContextProvider = ({ children }) => {
 
       // socket.on() is used to listen to the events. can be used both on client and server side
       socket.on("getOnlineUsers", (users) => {
+        console.log(users, "onlineUsers");
         setOnlineUsers(users);
       });
 

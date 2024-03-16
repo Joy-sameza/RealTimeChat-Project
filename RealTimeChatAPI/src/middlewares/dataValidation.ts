@@ -4,7 +4,18 @@ import messageSchema from "./dataValidation/messageSchema.js";
 import { NextFunction, Request, Response } from "express";
 import loginSchema from "./dataValidation/loginSchema.js";
 import updateUserSchema from "./dataValidation/updatedUserSchema.js";
+import { sendErrorToClient } from "../utils/sendAndLogError.js";
 
+/**
+ * @description This is the data validation middleware
+ * @param objectName - Used to validate the following data incomming
+ * - user register data "user"
+ * - user update "update"
+ * - user login "login"
+ * - chatroom creation/edit "chatRoom"
+ * - message creation/edit "message"
+ * @returns
+ */
 export const validateDataFor = (objectName: string) => {
   return (req: Request, res: Response, next: NextFunction) => {
     try {
@@ -32,7 +43,7 @@ export const validateDataFor = (objectName: string) => {
           break;
       }
     } catch (error) {
-      res.status(400).json({ message: "data validation error", error });
+      sendErrorToClient(res, "data validation error", error);
     }
   };
 };

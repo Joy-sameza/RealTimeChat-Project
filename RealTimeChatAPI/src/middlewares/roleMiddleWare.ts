@@ -1,5 +1,4 @@
 import { NextFunction, Request, Response } from "express";
-import { getTokenValue } from "./authMiddleware.js";
 import { ENCRIPTION_SECRET_KEY } from "../../config/config.js";
 import jwt from "jsonwebtoken";
 import {
@@ -8,11 +7,18 @@ import {
   getMessageById,
 } from "../directus/directusCrud.js";
 
+/**
+ * @description Verify the priority or ownership of some data befor granting the possibelity of modification or deleting the target data.
+ * @param objectName - Object name priority to verify
+ * - chatroom "chatRoom"
+ * - user "user"
+ * - messages "message"
+ * @returns
+ */
 export const isAdminOrAuthor = (objectName: string) => {
   return async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const { cookie } = req.headers;
-      const token = getTokenValue(cookie!, "token");
+      const token = req.cookies.token;
 
       if (token) {
         const userData: Partial<

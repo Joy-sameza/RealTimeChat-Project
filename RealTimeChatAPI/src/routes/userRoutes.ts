@@ -20,7 +20,7 @@ const userRoutes = Router();
  *  post:
  *     tags:
  *     - User EndPoints
- *     summary: Login as a user
+ *     summary: attenpts to register as a user when provided with the required data
  *     requestBody:
  *      required: true
  *      content:
@@ -47,7 +47,7 @@ const userRoutes = Router();
  *                default: none
  *     responses:
  *      201:
- *        description: Created
+ *        description: request succesful
  *      409:
  *        description: Conflict
  *      404:
@@ -63,7 +63,7 @@ userRoutes.post("/signup", [validateDataFor("user")], signeup); //register
  *  post:
  *     tags:
  *     - User EndPoints
- *     summary: Login as a user
+ *     summary: Attempts to Login as a user provided with the required credentials
  *     requestBody:
  *      required: true
  *      content:
@@ -82,7 +82,7 @@ userRoutes.post("/signup", [validateDataFor("user")], signeup); //register
  *                default: johnDoe20!@
  *     responses:
  *      201:
- *        description: Created
+ *        description: request succesful
  *      409:
  *        description: Conflict
  *      404:
@@ -98,10 +98,10 @@ userRoutes.post("/signin", [validateDataFor("login")], signein); //login
  *  get:
  *     tags:
  *     - User EndPoints
- *     summary: logsout a user
+ *     summary: Attempt to logout a user that has logedin already
  *     responses:
  *      200:
- *        description: user loged Successfully
+ *        description: request succesful
  *      400:
  *        description: Bad Request
  *      404:
@@ -117,7 +117,7 @@ userRoutes.get("/logout", [isLogedIn], logoutUser);
  *  get:
  *     tags:
  *     - User EndPoints
- *     summary: Retrives user data with userId
+ *     summary: Fetches a users data with the corresponding userId
  *     parameters:
  *      - name: userId
  *        in: path
@@ -125,7 +125,7 @@ userRoutes.get("/logout", [isLogedIn], logoutUser);
  *        required: true
  *     responses:
  *      200:
- *        description: Data retrived Successfully
+ *        description: request succesful
  *      400:
  *        description: Bad Request
  *      404:
@@ -141,10 +141,10 @@ userRoutes.get("/get/data/:userId", [isLogedIn], getUserDataById);
  *  get:
  *     tags:
  *     - User EndPoints
- *     summary: Retrives all user
+ *     summary: Fetches all the registered users
  *     responses:
  *      200:
- *        description: Loged out Successfully
+ *        description: request succesful
  *      400:
  *        description: Bad Request
  *      404:
@@ -160,11 +160,11 @@ userRoutes.get("/get/all", [isLogedIn], getAllUsers);
  *  put:
  *     tags:
  *     - User EndPoints
- *     summary: Modify a users data
+ *     summary: Modify a users data with the corresponding id
  *     parameters:
  *      - name: userId
  *        in: path
- *        description: The userId of the user
+ *        description: The userId of the user to be edited
  *        required: true
  *     requestBody:
  *      required: true
@@ -189,7 +189,7 @@ userRoutes.get("/get/all", [isLogedIn], getAllUsers);
  *                default: 'offline'
  *     responses:
  *      200:
- *        description: Modified
+ *        description: request succesful
  *      400:
  *        description: Bad Request
  *      404:
@@ -209,7 +209,7 @@ userRoutes.put(
  *  delete:
  *     tags:
  *     - User EndPoints
- *     summary: Delete user by Id
+ *     summary: Delete user with the corresponding Id
  *     parameters:
  *      - name: userId
  *        in: path
@@ -217,7 +217,7 @@ userRoutes.put(
  *        required: true
  *     responses:
  *      200:
- *        description: Removed
+ *        description: request succesful
  *      400:
  *        description: Bad request
  *      404:

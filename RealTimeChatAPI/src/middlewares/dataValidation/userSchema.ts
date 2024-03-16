@@ -1,5 +1,8 @@
 import { z } from "zod";
 
+/**
+ * @description User data validation schema.
+ */
 export const userSchema = z
   .object({
     id: z.number(),
@@ -16,8 +19,6 @@ export const userSchema = z
     role: z.string(),
     profilePicture: z.string(),
     verified: z.string(),
-    lastLogin: z.date(),
-    status: z.string(),
   })
   .required({
     userName: true,
@@ -29,8 +30,6 @@ export const userSchema = z
     role: true,
     profilePicture: true,
     verified: true,
-    lastLogin: true,
-    status: true,
   });
 
 export default userSchema;
