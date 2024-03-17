@@ -199,13 +199,8 @@ you should now bw able to see the chat app server starting on your docker virtua
 
 # <a id="examples"> 🗜 How to use </a>
 
-The following steps will guide you on how to use the api to develop your application. we a going to make use of the endpoints provided to you in the **endpoint documentation**. so you should keep an eye on it while working with through this tutorial.
-
-- ## <a id="endpoints"> 🔀 Api endpoints </a>
-  As you may have noticed, the endpoints are grouped according to the verious resources they provide. which are as follows
-  - Ad
-
-# <a id="authrequirments"> 🔐 Authentication Process </a>
+Be ware that befor any action you should signup and login. most of the routes are protected from on authenticated users.
+visite the api endpoinds documentation.
 
 # <a id="tests"> 💯 Tests </a>
 
@@ -213,27 +208,51 @@ The following steps will guide you on how to use the api to develop your applica
 - ## <a id="acc-test"> 🥒 Acceptance tests </a>
 - ## <a id="mut-test"> 👽 Mutant testing </a>
 
-# <a id="env-variables"> 🌿 Env variables </a>
+# <a id="code-analysis-and-consistency">☑️ Code analysis and consistency</a>
+
+- ## 🔍 Code linting & formatting
+
+  ![ESLint](https://img.shields.io/badge/-ESLint-black?style=for-the-badge&logoColor=white&logo=eslint&color=341BAB)
+
+  In order to keep the code clean, consistent and free of bad TS practices, more than **300 ESLint rules are activated**!
+
+  Complete list of all enabled rules is available in the **[.eslintrc.json file](http://localhost:8000/.eslintrc.js)**.
+
+- ## ▶️ Commands
+
+  Before linting, you must follow the [installation steps](#installation).
+
+  Then, run one of the following commands :
+
+  ```bash
+  # Lint
+  npm run lint
+  ```
+
+  lint and fix errors.
+
+  ```bash
+  # Lint and fix
+  npm run lint:fix
+  ```
+
+# <a id="misc-commands">✨ Misc command</a>
+
+🖼 Create docker image with docker compose
+
+```shell
+docker compose up -d --build
+```
 
 # <a id="folder-structure"> 🃏 Folder Structure </a>
 
-# <a id="code-analysis-and-consistency"> ☑️ Code analysis and consistency </a>
-
-# <a id="versions"> 📈 Releases & Changelog </a>
-
-# <a id="contributors"> ❤️ Contributors </a>
-
-# <a id="license"> ©️ License </a>
-
-This is the **first** version of the API **[Event Planning API](http://localhost:8000/docs)**. It is still under development.
-
-# <p id="folder-structure">🃏 Folder Structure</a>
+Use this gide to easly navigate through the files and folders of the project
 
 ```bash
 
-    EventPlaning
+    RealtimeChat Project
     │
-    ├── EventPlanerAPI
+    ├── RealTimeChatAPI
     │   │
     │   ├── .dockerignore
     │   ├── .env
@@ -309,102 +328,6 @@ This is the **first** version of the API **[Event Planning API](http://localhost
 
 ```
 
-# <a id="installation">🔨 Installation</a>
-
-## <a id="rabbitmq">🐇 [RabbitMQ install](https://www.rabbitmq.com/docs/install-windows)</a>
-
-Using chocolatey
-
-```bash
-choco install rabbitmq
-```
-
-# <a id="tests">💯 Tests</a>
-
-## 🧪 Unit and E2E tests
-
-## 🥒 Acceptance tests
-
-## 👽 Mutant testing
-
-## ▶️ Commands
-
-# <a id="env-variables">🌿 Env variables</a>
-
-## On Docker
-
-|        Name         |               Description               | Required |   Default value   |                   Limitations                    |
-| :-----------------: | :-------------------------------------: | :------: | :---------------: | :----------------------------------------------: |
-|       `HOST`        | Host on which the API will be available |    ❌    |    `eventapi`     |          If set, can't be empty string           |
-|       `PORT`        | Port on which the API will be available |    ❌    |      `8000`       | If set, must be a number between `0` and `65535` |
-|   `ENVIRONNEMENT`   |  Environment in which the API will run  |    ✅    |   `production`    |  Must be `development`, `production` or `test`   |
-|   `DATABASE_HOST`   |        MongoDB database host URL        |    ✅    | `mongodb_server`  |              Can't be empty string               |
-|   `DATABASE_PORT`   |          MongoDB database port          |    ❌    |      `27017`      | If set, must be a number between `0` and `65535` |
-|   `DATABASE_NAME`   |          MongoDB database name          |    ✅    | `eventManagement` |              Can't be empty string               |
-| `DATABASE_USERNAME` |          MongoDB database user          |    ✅    |        ❌         |              Can't be empty string               |
-| `DATABASE_PASSWORD` |        MongoDB database password        |    ✅    |        ❌         |              Can't be empty string               |
-|   `RABBITMQ_HOST`   |       RabbitMQ server uri address       |    ✅    | `rabbitmq_server` |              Can't be empty string               |
-|    `CORS_ORIGIN`    |           CORS allowed origin           |    ❌    |        `*`        |          If set, can't be empty string           |
-
-# <a id="code-analysis-and-consistency">☑️ Code analysis and consistency</a>
-
-## 🔍 Code linting & formatting
-
-![ESLint](https://img.shields.io/badge/-ESLint-black?style=for-the-badge&logoColor=white&logo=eslint&color=341BAB)
-
-In order to keep the code clean, consistent and free of bad TS practices, more than **300 ESLint rules are activated** !
-
-Complete list of all enabled rules is available in the **[.eslintrc.js file](http://localhost:8000/.eslintrc.js)**.
-
-## ▶️ Commands
-
-Before linting, you must follow the [installation steps](#installation).
-
-Then, run one of the following commands :
-
-```bash
-# Lint
-npm run lint
-```
-
-lint and fix errors.
-
-```bash
-# Lint and fix
-npm run lint:fix
-```
-
-lint and fix only staged files.
-
-```bash
-# Lint and fix only on staged files (runs on pre-commit)
-npm run lint:staged:fix
-```
-
-## 🥇 Project quality scanner
-
-Multiple tools are set up to maintain the best code quality and to prevent vulnerabilities :
-
-![CodeQL](https://img.shields.io/badge/-CodeQL-black?style=for-the-badge&logoColor=white&logo=github&color=2781FE)
-
-You can check the **[CodeQL analysis report here](https://github.com/antoinezanardi/werewolves-assistant-api-next/security/code-scanning)**.
-
-![SonarCloud](https://img.shields.io/badge/-SonarCloud-black?style=for-the-badge&logoColor=white&logo=sonarcloud&color=F37A3A)
-
-SonarCloud summary is available **[here](https://sonarcloud.io/summary/new_code?id=antoinezanardi_werewolves-assistant-api-next)**.
-
-[![Coverage](https://sonarcloud.io/api/project_badges/measure?project=antoinezanardi_werewolves-assistant-api-next&metric=coverage)](https://sonarcloud.io/summary/new_code?id=antoinezanardi_werewolves-assistant-api-next)
-[![Duplicated Lines (%)](https://sonarcloud.io/api/project_badges/measure?project=antoinezanardi_werewolves-assistant-api-next&metric=duplicated_lines_density)](https://sonarcloud.io/summary/new_code?id=antoinezanardi_werewolves-assistant-api-next)
-[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=antoinezanardi_werewolves-assistant-api-next&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=antoinezanardi_werewolves-assistant-api-next)
-
-[![Technical Debt](https://sonarcloud.io/api/project_badges/measure?project=antoinezanardi_werewolves-assistant-api-next&metric=sqale_index)](https://sonarcloud.io/summary/new_code?id=antoinezanardi_werewolves-assistant-api-next)
-[![Vulnerabilities](https://sonarcloud.io/api/project_badges/measure?project=antoinezanardi_werewolves-assistant-api-next&metric=vulnerabilities)](https://sonarcloud.io/summary/new_code?id=antoinezanardi_werewolves-assistant-api-next)
-[![Code Smells](https://sonarcloud.io/api/project_badges/measure?project=antoinezanardi_werewolves-assistant-api-next&metric=code_smells)](https://sonarcloud.io/summary/new_code?id=antoinezanardi_werewolves-assistant-api-next)
-
-[![Reliability Rating](https://sonarcloud.io/api/project_badges/measure?project=antoinezanardi_werewolves-assistant-api-next&metric=reliability_rating)](https://sonarcloud.io/summary/new_code?id=antoinezanardi_werewolves-assistant-api-next)
-[![Security Rating](https://sonarcloud.io/api/project_badges/measure?project=antoinezanardi_werewolves-assistant-api-next&metric=security_rating)](https://sonarcloud.io/summary/new_code?id=antoinezanardi_werewolves-assistant-api-next)
-[![Bugs](https://sonarcloud.io/api/project_badges/measure?project=antoinezanardi_werewolves-assistant-api-next&metric=bugs)](https://sonarcloud.io/summary/new_code?id=antoinezanardi_werewolves-assistant-api-next)
-
 # <a id="packege-config">🗳 Packages and Configuration files</a>
 
 Hier you have all the packages and configurations necessary to the projects deployment.
@@ -465,41 +388,10 @@ Hier you have all the packages and configurations necessary to the projects depl
 }
 ```
 
-# <a id="misc-commands">✨ Misc commands</a>
-
-## 🌳 Animated tree visualisation of the project's evolution with **[Gource](https://gource.io/)**
-
-```shell
-# Please ensure that `gource` is installed on your system.
-npm run gource
-```
-
-## 🖼 Create docker image with docker compose
-
-```shell
-docker compose up -d --build
-```
-
-## 🔀 Create git branch with a conventional name
-
-```shell
-npm run script:create-branch
-```
-
-## ⤴️ Create pull request against the `develop` branch from current branch
-
-```shell
-npm run script:create-pull-request
-```
-
-## 📣 To all IntelliJ IDEs users (IntelliJ, Webstorm, PHPStorm, etc.)
-
-All the above commands are available in the **.run directory** at the root of the project.
-
-You can add them as **run configurations** in your IDE.
-
 # <a id="contributors">❤️ Contributors</a>
 
-There is no contributor yet. Want to be the first ?
+There is no contributor yet. This is a technical interview project
 
-If you want to contribute to this project, please read the [**contribution guide**](https://github.com/antoinezanardi/werewolves-assistant-api-next/blob/master/CONTRIBUTING.md).
+# <a id="license"> ©️ License </a>
+
+This is the **first** version of the API **[Event Planning API](http://localhost:8000/docs)**. It is still under development.
