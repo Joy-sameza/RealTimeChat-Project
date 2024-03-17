@@ -17,7 +17,7 @@ const server = express();
 const nodeApp = createServer(server);
 export const io = new SocketIoServer(nodeApp, { cors: { origin: "*" } });
 const __dirname = path.resolve();
-console.log(__dirname);
+
 server.use(express.json());
 server.use(cors({ origin: "*" }));
 server.use(cookieParser());
@@ -27,7 +27,10 @@ server.use("/api/admin", adminRoutes);
 server.use("/api/user", userRoutes);
 server.use("/api/chatroom", chatRoomRoutes);
 server.use("/api/message", messageRoutes);
-server.use("/demo", express.static("../chat-app-demo/dist"));
+server.use(express.static(path.join(__dirname, "/chat-app-demo/dist")));
+server.use("/demo", (req, res) => {
+  res.sendFile(path.join(__dirname, "chat-app-demo", "dist", "index.html"));
+});
 
 const socketMap: Partial<{ userId: string; value: string } | never>[] = [];
 const roomMap: string[] = [];
