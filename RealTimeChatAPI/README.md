@@ -41,8 +41,8 @@ This is a cutting-edge solution designed to bring real-time communication capabi
   - Instant messaging 💬,
   - Group chats 👥,
   - message history 📜,
-  - online indicators 📝.
-  <!-- - read receipts ✅, -->
+    <!-- - online indicators 📝. -->
+    <!-- - read receipts ✅, -->
 
   - ## Authentication
     An authentication system is provide using **jwt** (Jason Web Token) to authenticat users and grant access to the resources. this is done by setting a cookie in the users browser upon registration or login and the token key can also be found in the response to the login or registration. after the registration, the users ar granted a certen level of freedom on the ressources accesed.
