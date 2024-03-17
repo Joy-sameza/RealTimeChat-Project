@@ -29,6 +29,7 @@ export async function createChatRoom(req: Request, res: Response) {
   try {
     const { body } = req;
 
+    body.profilePicture = `https://avatar.iran.liara.run/username?username=${body.name}+${body.description}`;
     const newChatRoom = await createNewChatRoom(body); // Call to directus controlle center for chatroom creation
 
     io.emit("newRoom", newChatRoom); //Emite chatroom creation even for realtime
