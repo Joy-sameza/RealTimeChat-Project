@@ -1,4 +1,4 @@
-FROM node
+FROM node:18.15
 RUN npm install -g nodemon
 WORKDIR /RealTimeChatAPI/
 COPY . .

@@ -2,6 +2,7 @@ version: "3"
 services:
   directus:
     image: directus/directus:10.10.4
+    container_name: directus_server
     ports:
       - 8055:8055
     volumes:
@@ -16,15 +17,15 @@ services:
       DB_CLIENT: "sqlite3"
       DB_FILENAME: "/directus/database/data.db"
       WEBSOCKETS_ENABLED: "true"
-  # chatapi:
-  #   build: ./RealTimeChatAPI
-  #   container_name: chatapi
-  #   ports:
-  #     - 4000:4000
-  #   volumes:
-  #     - "./RealTimeChatAPI:/RealTimeChatAPI"
-  #     - "/RealTimeChatAPI/node_modules"
-  #   depends_on:
-  #     directus:
-  #       condition: service_started
-  #       restart: true
+  chatapi:
+    build: ./RealTimeChatAPI
+    container_name: chatapi
+    ports:
+      - 4000:4000
+    volumes:
+      - "./RealTimeChatAPI:/RealTimeChatAPI"
+      - "/RealTimeChatAPI/node_modules"
+    depends_on:
+      directus:
+        condition: service_started
+        restart: true

@@ -1,6 +1,6 @@
 import express from "express";
-import path from "node:path";
 import { createServer } from "node:http";
+import path from "node:path";
 import cors from "cors";
 import cookieParser from "cookie-parser";
 import swaggerDocs from "./swagger.js";
@@ -16,8 +16,8 @@ import adminRoutes from "./src/routes/adminRoutes.js";
 const server = express();
 const nodeApp = createServer(server);
 export const io = new SocketIoServer(nodeApp, { cors: { origin: "*" } });
-const __dirname = path.resolve();
 
+const __dirname = path.resolve();
 server.use(express.json());
 server.use(cors({ origin: "*" }));
 server.use(cookieParser());
@@ -27,8 +27,9 @@ server.use("/api/admin", adminRoutes);
 server.use("/api/user", userRoutes);
 server.use("/api/chatroom", chatRoomRoutes);
 server.use("/api/message", messageRoutes);
-server.use(express.static(path.join(__dirname, "/chat-app-demo/dist")));
-server.use("/demo", (req, res) => {
+
+server.use(express.static(path.join(__dirname, "chat-app-demo/dist")));
+server.use("*", (req, res) => {
   res.sendFile(path.join(__dirname, "chat-app-demo", "dist", "index.html"));
 });
 

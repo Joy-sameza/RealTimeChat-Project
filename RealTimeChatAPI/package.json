@@ -15,6 +15,7 @@
   "author": "Nguezet Kenfack Jordan Junior",
   "license": "ISC",
   "devDependencies": {
+    "@types/cookie-parser": "^1.4.7",
     "@types/express": "^4.17.21",
     "@types/node": "^20.11.21",
     "@types/swagger-jsdoc": "^6.0.4",
@@ -41,6 +42,7 @@
     "amqplib": "^0.10.3",
     "bcryptjs": "^2.4.3",
     "bottleneck": "^2.19.5",
+    "cookie-parser": "^1.4.6",
     "cors": "^2.8.5",
     "dotenv": "^16.4.5",
     "express": "^4.18.2",
