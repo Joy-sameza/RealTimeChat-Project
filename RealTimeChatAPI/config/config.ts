@@ -17,4 +17,4 @@ export const DIRECTUS_ADMIN_PASSWORD =
   env.DIRECTUS_ADMIN_PASSWORD ?? "d1r3ctu5";
 
 export const ENCRIPTION_SECRET_KEY =
-  env.ENCRIPTION_SECRET_KEY ?? "Rea17im9cha7";
+  env.ENCRIPTION_SECRET_KEY ?? "gVTDdfd4nHiVnqCh8DpDvTlS1jxpzxBBd/WivnUs+KE=";

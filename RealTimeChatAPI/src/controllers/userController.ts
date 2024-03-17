@@ -10,6 +10,8 @@ import {
 import bcrypt from "bcryptjs";
 import { generatToken } from "../utils/generateToken.js";
 import { sendErrorToClient } from "../utils/sendAndLogError.js";
+import { checkIfUserExist, parseUserData } from "../utils/userUtils.js";
+import { ChatApiError } from "../customErrors/customErrors.js";
 
 /**
  * @description This methode attempts to Signeup/Register a user using the following information
@@ -34,39 +36,42 @@ export async function signeup(req: Request, res: Response) {
   try {
     const { body } = req;
 
-    await getDataOnUserWithEmail(body.email).then(async (userList) => {
-      if (userList.length > 0) {
-        res.status(400).json({
-          message: "User email already taken please login",
-          data: null,
+    const userExist = await checkIfUserExist(body.email).catch(
+      (error: ChatApiError) => {
+        res.status(error.errorCode).json({
+          error: error.message,
+          data: error,
         });
         return;
-      } else {
-        const hashedPassword = await bcrypt.hash(body.password, 10);
+      },
+    );
 
-        const profilePictureBoy = `https://avatar.iran.liara.run/public/boy?username=${body.userName}`;
-        const profilePictureGirl = `https://avatar.iran.liara.run/public/girl?username=${body.userName}`;
+    if (!userExist && userExist !== undefined) {
+      const hashedPassword = await bcrypt.hash(body.password, 10);
+      const parsedUserData = parseUserData(body, hashedPassword);
 
-        const userData = {
-          ...body,
-          profilePicture:
-            body.gender === "male" ? profilePictureBoy : profilePictureGirl,
-          password: hashedPassword,
-        };
-
-        await createUser(userData).then((newUser) => {
-          res.cookie(
-            "token",
-            generatToken({ id: newUser.id, role: newUser.role }),
-          );
-          res.json({
-            message: "User sucesfully created",
-            data: newUser,
+      const newUser = await createUser(parsedUserData).catch(
+        (error: ChatApiError) => {
+          res.status(error.errorCode).json({
+            error: error.message,
+            data: error,
           });
           return;
+        },
+      );
+
+      if (newUser) {
+        res.cookie(
+          "token",
+          generatToken({ id: newUser.id, role: newUser.role }),
+        );
+        res.status(200).json({
+          message: "User sucesfully created",
+          data: newUser,
         });
       }
-    });
+    }
+    return;
   } catch (error) {
     sendErrorToClient(res, "Could not create this user", error);
   }
@@ -79,7 +84,11 @@ export async function signeup(req: Request, res: Response) {
  * @param {Response} res - Express response object
  */
 export async function logoutUser(req: Request, res: Response) {
-  res.clearCookie("token").json({ message: "logedout Sucessfully" });
+  res
+    .clearCookie("token")
+    .status(200)
+    .json({ message: "logedout Sucessfully" });
+
   return;
 }
 
@@ -101,45 +110,57 @@ export async function signein(req: Request, res: Response) {
   try {
     const { email, password } = req.body;
     //find user
-    const userToLogin = await getDataOnUserWithEmail(email);
-    if (userToLogin.length < 1) {
-      res.status(400).json({
-        error: "Invalide email or Password",
-        data: null,
-      });
-      return;
-    }
-    const isValidPassword = bcrypt.compareSync(
-      password,
-      userToLogin[0].password,
+    const userToLogin = await getDataOnUserWithEmail(email).catch(
+      (error: ChatApiError) => {
+        res.status(error.errorCode).json({
+          error: error.message,
+          data: error,
+        });
+        return;
+      },
     );
 
-    if (!isValidPassword) {
-      res.status(400).json({
-        error: "Invalide email or Password",
-        data: null,
+    if (userToLogin) {
+      if (userToLogin.length < 1) {
+        res.status(400).json({
+          error: "Invalide email or Password",
+          data: null,
+        });
+        return;
+      }
+
+      const isValidPassword = bcrypt.compareSync(
+        password,
+        userToLogin[0].password,
+      );
+
+      if (!isValidPassword) {
+        res.status(400).json({
+          error: "Invalide email or Password",
+          data: null,
+        });
+        return;
+      }
+
+      const token = generatToken({
+        id: userToLogin[0].id,
+        role: userToLogin[0].role,
       });
-      return;
+
+      res
+        .setHeader("token", token)
+        .cookie("token", token, {
+          maxAge: 15 * 24 * 60 * 60 * 1000,
+          httpOnly: true,
+          sameSite: false,
+        })
+        .json({
+          message: "User loged in successfully",
+          data: { user: userToLogin[0], toke: token },
+        });
     }
 
-    const token = generatToken({
-      id: userToLogin[0].id,
-      role: userToLogin[0].role,
-    });
-
-    res
-      .setHeader("token", token)
-      .cookie("token", token, {
-        maxAge: 15 * 24 * 60 * 60 * 1000,
-        httpOnly: true,
-        sameSite: false,
-      })
-      .json({
-        message: "User loged in successfully",
-        data: { user: userToLogin[0], toke: token },
-      });
-    //validate password
-    //return user data
+    return;
   } catch (error) {
     sendErrorToClient(res, "Could not login this user", error);
   }
@@ -172,14 +193,14 @@ export async function signein(req: Request, res: Response) {
 export async function getUserDataById(req: Request, res: Response) {
   try {
     const { userId } = req.params;
+    const userdata = await getDataOnUserById(parseInt(userId));
 
-    await getDataOnUserById(parseInt(userId)).then((userdata) => {
-      res.json({
-        message: "User data fetched sucessfully",
-        data: userdata,
-      });
-      return;
+    res.status(200).json({
+      message: "User data fetched sucessfully",
+      data: userdata,
     });
+
+    return;
   } catch (error) {
     sendErrorToClient(res, "Could not get this user data", error);
   }
@@ -211,18 +232,22 @@ export async function getUserDataById(req: Request, res: Response) {
  */
 export async function getAllUsers(req: Request, res: Response) {
   try {
-    await getAllUsersData().then((userdata) => {
-      res.json({
-        message: "Users data fetched sucessfully",
-        data: userdata,
+    const userdata = await getAllUsersData().catch((error: ChatApiError) => {
+      res.status(error.errorCode).json({
+        error: error.errorCode,
+        data: error.message,
       });
       return;
     });
+    if (userdata) {
+      res.status(200).json({
+        message: "Users data fetched sucessfully",
+        data: userdata,
+      });
+    }
+
+    return;
   } catch (error) {
-    res.status(400).json({
-      error: `userController could not get all users data ${error.message ?? null}`,
-      data: null,
-    });
     sendErrorToClient(res, "Could not get the set of user data", error);
   }
 }
@@ -247,13 +272,14 @@ export async function getAllUsers(req: Request, res: Response) {
 export async function updateUserById(req: Request, res: Response) {
   try {
     const { body } = req;
-    await updateDataOnUserById(body.id, body).then((userdata) => {
-      res.json({
-        message: "Users data updated sucessfully",
-        data: userdata,
-      });
-      return;
+    const userdata = await updateDataOnUserById(body.id, body);
+
+    res.status(200).json({
+      message: "Users data updated sucessfully",
+      data: userdata,
     });
+
+    return;
   } catch (error) {
     sendErrorToClient(res, "Could not get update this user data", error);
   }
@@ -267,17 +293,24 @@ export async function updateUserById(req: Request, res: Response) {
  * @param {Request} req - Express request object
  * @param {Response} res - Express response object
  */
-export async function deleUserById(req: Request, res: Response) {
+export async function deleteUserById(req: Request, res: Response) {
   try {
     const { userId } = req.params;
-
-    await deleteUsersAccountById(parseInt(userId)).then(() => {
-      res.json({
-        message: "Users data deleted sucessfully",
-        data: null,
+    await deleteUsersAccountById(parseInt(userId))
+      .then(() => {
+        res.status(200).json({
+          message: "Users data deleted sucessfully",
+          data: null,
+        });
+      })
+      .catch((error: ChatApiError) => {
+        res.status(error.errorCode).json({
+          error: error.message,
+          data: error,
+        });
       });
-      return;
-    });
+
+    return;
   } catch (error) {
     sendErrorToClient(res, "Could not delete this user", error);
   }

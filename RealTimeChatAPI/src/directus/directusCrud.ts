@@ -8,17 +8,16 @@ import {
 } from "@directus/sdk";
 import { directus } from "./directuseConection.js";
 import { ChatRoomType, MessageType, UserType } from "../interface/dataTypes.js";
+import { throwInternalServerError } from "../utils/directusCrudServerError.js";
 
 /**
  * @description Creates a new chatroom
  *
  * @example
- * try{
  * // pass the new chatroom attributes to the function like this
- *  const newChatRoom = await createNewChatRoom(body);
- * }catch(error){
- *  console.log(error.message)
- * }
+ *  const newChatRoom = await createNewChatRoom(body).catch((error:ChatApiError)=>{
+ *  console.log(error.message);
+ * })
  * @param {ChatRoomType} newRoomData - New chatroom data to be completed befor creation
  * @returns {ChatRoomType} Returns the item objects of the item that were created.
  */
@@ -34,7 +33,7 @@ export async function createNewChatRoom(newRoomData: ChatRoomType) {
       }),
     );
   } catch (error) {
-    throw new Error("Directus: chatroom Creation failed with");
+    throw throwInternalServerError();
   }
 }
 
@@ -45,10 +44,9 @@ export async function createNewChatRoom(newRoomData: ChatRoomType) {
  *
  * // use like this
  * try{
- *  const allChatrooms = await getAllChatRooms()
- * }catch(error){
- *  console.log(error.message)
- * }
+ *  const allChatrooms = await getAllChatRooms().catch((error:ChatApiError)=>{
+ *  console.log(error.message);
+ * })
  *
  * @returns All aveilable chatrooms
  */
@@ -56,7 +54,7 @@ export async function getAllChatRooms() {
   try {
     return await directus.request(readItems("chatRooms"));
   } catch (error) {
-    throw new Error(`Error fetching chatrooms`);
+    throw throwInternalServerError();
   }
 }
 
@@ -64,12 +62,10 @@ export async function getAllChatRooms() {
  * @description gets all the users in a chat room using the members table
  *
  * @example
- * try{
  *  // use like this
- *  const allusers = await getAllUsersInChatRoom(parseInt(chatRoomId));
- * }catch(error){
- *  console.log(error.message)
- * }
+ *  const allusers = await getAllUsersInChatRoom(parseInt(chatRoomId)).catch((error:ChatApiError)=>{
+ *  console.log(error.message);
+ * })
  *
  * @param {number} chatRoomId - The concerned chatroom
  * @returns the requested users if exist
@@ -98,7 +94,7 @@ export async function getAllUsersInChatRoom(chatRoomId: number) {
       return [];
     }
   } catch (error) {
-    throw new Error("Error fetching chatrooms");
+    throw throwInternalServerError();
   }
 }
 
@@ -106,12 +102,10 @@ export async function getAllUsersInChatRoom(chatRoomId: number) {
  * @description Get data on a spesific chatroom
  *
  * @example
- * try{
  *  // use like this
- *  const chatRoom = await getAChatRoomById(chatRoomId)
- * }catch(error){
- *  console.log(error.message)
- * }
+ *  const chatRoom = await getAChatRoomById(chatRoomId).catch((error:ChatApiError)=>{
+ *  console.log(error.message);
+ * })
  *
  * @param {number} chatRoomId - Chatroom concerned
  * @returns - the chatroom concerned
@@ -120,7 +114,7 @@ export async function getAChatRoomById(chatRoomId: number) {
   try {
     return await directus.request(readItem("chatRooms", chatRoomId));
   } catch (error) {
-    throw new Error("Error fetching the chatroom");
+    throw throwInternalServerError();
   }
 }
 
@@ -128,11 +122,9 @@ export async function getAChatRoomById(chatRoomId: number) {
  * @description update a chatroom matching the id
  *
  * @example
- * try{
- * const newChatroom = await updateChatRoomById(chatRoomId: number,chatRoomData: ChatRoomType)
- * }catch(error){
- *  console.log(error.message)
- * }
+ * const newChatroom = await updateChatRoomById(chatRoomId: number,chatRoomData: ChatRoomType).catch((error:ChatApiError)=>{
+ *  console.log(error.message);
+ * })
  * @param {number} chatRoomId - the chat room id
  * @param {ChatRoomType} chatRoomData - chatroom update data
  * @returns
@@ -146,7 +138,7 @@ export async function updateChatRoomById(
       updateItem("chatRooms", chatRoomId, chatRoomData),
     );
   } catch (error) {
-    throw new Error("Error updating the chatroom");
+    throw throwInternalServerError();
   }
 }
 
@@ -154,7 +146,6 @@ export async function updateChatRoomById(
  * @description deletes a chatroom that matches the id
  *
  * @example
- * try{
  *  await deleteChatRoomWithId(roomId)
  * }catch(error){
  *  console.log(error.maessage)
@@ -189,7 +180,7 @@ export async function deleteChatRoomWithId(roomId: number) {
         throw deleteRoomError;
       });
   } catch (error) {
-    throw new Error("Chatroom delete failed with error:");
+    throw throwInternalServerError();
   }
 }
 
@@ -197,11 +188,9 @@ export async function deleteChatRoomWithId(roomId: number) {
  * @description fetch all the users in this chatroom
  *
  * @example
- * try{
- *  const messages = await getAllMessagesInChatRoomById(roomId)
- * }catch(error){
- *  console.log(error.message)
- * }
+ *  const messages = await getAllMessagesInChatRoomById(roomId).catch((error:ChatApiError)=>{
+ *  console.log(error.message);
+ * })
  *
  * @param {number} roomId - the room id
  * @returns all messages in this room
@@ -211,7 +200,7 @@ export async function getAllMessagesInChatRoomById(roomId: number) {
     const roomMessages = await directus.request(readItems("messages"));
     return roomMessages.filter((x) => x.chatRoomId === roomId);
   } catch (error) {
-    throw new Error("Error fetching messages for this room");
+    throw throwInternalServerError();
   }
 }
 
@@ -219,11 +208,9 @@ export async function getAllMessagesInChatRoomById(roomId: number) {
  * @description Creates a membership to this chatroom for the user sending the message
  *
  * @example
- * try{
- *  const newMessage = await createNewMessage(newMessageData)
- * }catch(error){
- *  console.log(error.message)
- * }
+ *  const newMessage = await createNewMessage(newMessageData).catch((error:ChatApiError)=>{
+ *  console.log(error.message);
+ * })
  *
  * @param {MessageType} newMessageData - Message data to complete for creation
  * @returns Mesage created
@@ -238,7 +225,16 @@ export async function createNewMessage(newMessageData: MessageType) {
         responseToMessageId: undefined,
       }),
     );
-    if (message) {
+    const ismember = await directus.request(
+      readItems("members", {
+        filter: {
+          userId: message.senderId,
+          chatRoomId: message.chatRoomId,
+        },
+      }),
+    );
+
+    if (ismember.length < 1) {
       await directus.request(
         createItem("members", {
           userId: message.senderId,
@@ -246,14 +242,10 @@ export async function createNewMessage(newMessageData: MessageType) {
           roleInChatroom: "participant",
         }),
       );
-      return message;
-    } else {
-      throw new Error("Could no create new massage an link to chat");
     }
+    return message;
   } catch (error) {
-    throw new Error(
-      "Chatroom new message creation failed with error: ${error.errors.map((x: { message: string }) => x.message)}",
-    );
+    throw throwInternalServerError();
   }
 }
 
@@ -261,11 +253,9 @@ export async function createNewMessage(newMessageData: MessageType) {
  * @description Deletes a message permanently, no going back
  *
  * @example
- * try{
- *  const deletedMessage = await deleteUsersMessageById(messageId)
- * }catch(error){
- *  console.log(error.message)
- * }
+ *  const deletedMessage = await deleteUsersMessageById(messageId).catch((error:ChatApiError)=>{
+ *  console.log(error.message);
+ * })
  *
  * @param {number} messageId - the message's id
  * @returns nothing to return
@@ -274,9 +264,7 @@ export async function deleteUsersMessageById(messageId: number) {
   try {
     return await directus.request(deleteItem("messages", messageId));
   } catch (error) {
-    throw new Error(
-      `Chatroom message delete failed with error: ${error.errors.map((x: { message: string }) => x.message)}`,
-    );
+    throw throwInternalServerError();
   }
 }
 
@@ -284,12 +272,10 @@ export async function deleteUsersMessageById(messageId: number) {
  * @description Get data on a spesific message
  *
  * @example
- * try{
  *  // use like this
- *  const message = await getMessageById(messageId)
- * }catch(error){
- *  console.log(error.message)
- * }
+ *  const message = await getMessageById(messageId).catch((error:ChatApiError)=>{
+ *  console.log(error.message);
+ * })
  *
  * @param {number} messageId - message concerned
  * @returns - the message concerned
@@ -298,7 +284,7 @@ export async function getMessageById(messageId: number) {
   try {
     return await directus.request(readItem("messages", messageId));
   } catch (error) {
-    throw new Error(`Chatroom message view failed with error:`);
+    throw throwInternalServerError();
   }
 }
 
@@ -306,11 +292,9 @@ export async function getMessageById(messageId: number) {
  * @description update a message matching the id
  *
  * @example
- * try{
- * const updatedMessage = await updateUserMessageById(updateMessage)
- * }catch(error){
- *  console.log(error.message)
- * }
+ * const updatedMessage = await updateUserMessageById(updateMessage).catch((error:ChatApiError)=>{
+ *  console.log(error.message);
+ * })
  * @param {MessageType} updateMessage - message update data
  * @returns
  */
@@ -319,7 +303,7 @@ export async function updateUserMessageById(updateMessage: MessageType) {
   try {
     return await directus.request(updateItem("messages", id, updateMessage));
   } catch (error) {
-    throw new Error(`Chatroom message update failed with error:`);
+    throw throwInternalServerError();
   }
 }
 
@@ -327,11 +311,9 @@ export async function updateUserMessageById(updateMessage: MessageType) {
  * @description fetch all the messages in this chatroom
  *
  * @example
- * try{
- *  const messages = await getAllMessagesInChatRoomById(roomId)
- * }catch(error){
- *  console.log(error.message)
- * }
+ *  const messages = await getAllMessagesInChatRoomById(roomId).catch((error:ChatApiError)=>{
+ *  console.log(error.message);
+ * })
  *
  * @param {number} chatRoomId - the room id
  * @returns all messages in this room
@@ -346,11 +328,21 @@ export async function getMessageAllFomChatroomById(chatRoomId: number) {
       }),
     );
   } catch (error) {
-    throw new Error(`Chatroom messages view failed with error:`);
+    throw throwInternalServerError();
   }
 }
 
-// users
+/**
+ * @description Creates a new user
+ *
+ * @example
+ * // pass the new chatroom attributes to the function like this
+ *  const newChatRoom = await createUser(userData).catch((error:ChatApiError)=>{
+ *  console.log(error.message);
+ * })
+ * @param {ChatRoomType} newRoomData - New chatroom data to be completed befor creation
+ * @returns {ChatRoomType} Returns the item objects of the item that were created.
+ */
 export async function createUser(userData: UserType) {
   try {
     return await directus.request(
@@ -363,7 +355,7 @@ export async function createUser(userData: UserType) {
       }),
     );
   } catch (error) {
-    throw new Error(`Could not create user`);
+    throw throwInternalServerError();
   }
 }
 
@@ -371,11 +363,9 @@ export async function createUser(userData: UserType) {
  * @description update a user matching the id
  *
  * @example
- * try{
- * const updatedUser = await updateDataOnUserById(userId, userData)
- * }catch(error){
- *  console.log(error.message)
- * }
+ * const updatedUser = await updateDataOnUserById(userId, userData).catch((error:ChatApiError)=>{
+ *  console.log(error.message);
+ * })
  * @param {number} userId - the chat room id
  * @param {UserType} userData - user update data
  * @returns updated user
@@ -384,7 +374,7 @@ export async function updateDataOnUserById(userId: number, userData: UserType) {
   try {
     return await directus.request(updateItem("users", userId, userData));
   } catch (error) {
-    throw new Error(`Could not update user`);
+    throw throwInternalServerError();
   }
 }
 
@@ -392,12 +382,10 @@ export async function updateDataOnUserById(userId: number, userData: UserType) {
  * @description Get data on a spesific user using the email address
  *
  * @example
- * try{
  *  // use like this
- *  const user = await getDataOnUserWithEmail(emai)
- * }catch(error){
- *  console.log(error.message)
- * }
+ *  const user = await getDataOnUserWithEmail(emai).catch((error:ChatApiError)=>{
+ *  console.log(error.message);
+ * })
  *
  * @param {string} email - user email concerned
  * @returns - the user concerned
@@ -408,7 +396,7 @@ export async function getDataOnUserWithEmail(email: string) {
       readItems("users", { search: email, limit: 1 }),
     );
   } catch (error) {
-    throw new Error(`Could not get user data`);
+    throw throwInternalServerError();
   }
 }
 
@@ -416,12 +404,10 @@ export async function getDataOnUserWithEmail(email: string) {
  * @description gets all registered the users
  *
  * @example
- * try{
  *  // use like this
- *  const allusers = await getAllUsersData();
- * }catch(error){
- *  console.log(error.message)
- * }
+ *  const allusers = await getAllUsersData().catch((error:ChatApiError)=>{
+ *  console.log(error.message);
+ * })
  *
  * @returns {UserType[]} the requested users if exist
  */
@@ -429,7 +415,7 @@ export async function getAllUsersData() {
   try {
     return await directus.request(readItems("users"));
   } catch (error) {
-    throw new Error(`Could not get all users`);
+    throw throwInternalServerError();
   }
 }
 
@@ -437,12 +423,10 @@ export async function getAllUsersData() {
  * @description Get data on a spesific user
  *
  * @example
- * try{
  *  // use like this
- *  const user = await getDataOnUserById(userId)
- * }catch(error){
- *  console.log(error.message)
- * }
+ *  const user = await getDataOnUserById(userId).catch((error:ChatApiError)=>{
+ *  console.log(error.message);
+ * })
  *
  * @param {number} userId - message concerned
  * @returns - the user concerned
@@ -451,7 +435,7 @@ export async function getDataOnUserById(userId: number) {
   try {
     return await directus.request(readItem("users", userId));
   } catch (error) {
-    throw new Error(`Could not get user`);
+    throw throwInternalServerError();
   }
 }
 
@@ -459,11 +443,9 @@ export async function getDataOnUserById(userId: number) {
  * @description Deletes a user permanently, no going back
  *
  * @example
- * try{
- *  const deletedUser = await deleteUsersAccountById(userId)
- * }catch(error){
- *  console.log(error.message)
- * }
+ *  const deletedUser = await deleteUsersAccountById(userId).catch((error:ChatApiError)=>{
+ *  console.log(error.message);
+ * })
  *
  * @param {number} userId - the user's id
  * @returns nothing to return
@@ -472,6 +454,6 @@ export async function deleteUsersAccountById(userId: number) {
   try {
     return await directus.request(deleteItem("users", userId));
   } catch (error) {
-    throw new Error(`Could not delete user`);
+    throw throwInternalServerError();
   }
 }

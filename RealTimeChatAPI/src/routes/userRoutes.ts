@@ -1,6 +1,6 @@
 import { Router } from "express";
 import {
-  deleUserById,
+  deleteUserById,
   getAllUsers,
   getUserDataById,
   logoutUser,
@@ -46,10 +46,10 @@ const userRoutes = Router();
  *                type: string
  *                default: none
  *     responses:
- *      201:
+ *      200:
  *        description: request succesful
- *      409:
- *        description: Conflict
+ *      400:
+ *        description: Bad Request
  *      404:
  *        description: Not Found
  *      500:
@@ -81,10 +81,10 @@ userRoutes.post("/signup", [validateDataFor("user")], signeup); //register
  *                type: string
  *                default: johnDoe20!@
  *     responses:
- *      201:
+ *      200:
  *        description: request succesful
- *      409:
- *        description: Conflict
+ *      400:
+ *        description: Bad Request
  *      404:
  *        description: Not Found
  *      500:
@@ -228,7 +228,7 @@ userRoutes.put(
 userRoutes.delete(
   "/delete/:userId",
   [isLogedIn, isAdminOrAuthor("user")],
-  deleUserById,
+  deleteUserById,
 );
 
 export default userRoutes;

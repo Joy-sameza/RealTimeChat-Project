@@ -1,4 +1,5 @@
 import express from "express";
+import path from "node:path";
 import { createServer } from "node:http";
 import cors from "cors";
 import cookieParser from "cookie-parser";
@@ -15,7 +16,8 @@ import adminRoutes from "./src/routes/adminRoutes.js";
 const server = express();
 const nodeApp = createServer(server);
 export const io = new SocketIoServer(nodeApp, { cors: { origin: "*" } });
-
+const __dirname = path.resolve();
+console.log(__dirname);
 server.use(express.json());
 server.use(cors({ origin: "*" }));
 server.use(cookieParser());
@@ -25,6 +27,7 @@ server.use("/api/admin", adminRoutes);
 server.use("/api/user", userRoutes);
 server.use("/api/chatroom", chatRoomRoutes);
 server.use("/api/message", messageRoutes);
+server.use("/demo", express.static("../chat-app-demo/dist"));
 
 const socketMap: Partial<{ userId: string; value: string } | never>[] = [];
 const roomMap: string[] = [];

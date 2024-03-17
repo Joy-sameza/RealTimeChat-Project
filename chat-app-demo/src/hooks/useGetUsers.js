@@ -1,12 +1,11 @@
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import useConversation from "../zustand/useConversation";
-import useGetConversations from "./useGetConversations";
 
 const useGetUsers = () => {
-  const { setLoading } = useGetConversations();
-  const [consernedUsers, setConsernedUsers] = useState([]);
-  const { selectedConversation } = useConversation();
+  const [loading, setLoading] = useState(false);
+  const { selectedConversation, consernedUsers, setConsernedUsers } =
+    useConversation();
 
   useEffect(() => {
     const getConversations = async () => {
@@ -29,8 +28,8 @@ const useGetUsers = () => {
     };
 
     getConversations();
-  }, [selectedConversation?.id, setLoading]);
+  }, [selectedConversation?.id, setLoading, setConsernedUsers]);
 
-  return { consernedUsers };
+  return { consernedUsers, loading };
 };
 export default useGetUsers;

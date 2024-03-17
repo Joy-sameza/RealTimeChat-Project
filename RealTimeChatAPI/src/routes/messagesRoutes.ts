@@ -43,10 +43,10 @@ const messageRoutes = Router();
  *                type: integer
  *                default: none
  *     responses:
- *      201:
+ *      200:
  *        description: Message created
- *      409:
- *        description: Conflict
+ *      400:
+ *        description: Bad Request
  *      404:
  *        description: Not Found
  *      500:

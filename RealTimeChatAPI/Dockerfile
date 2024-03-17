@@ -3,5 +3,5 @@ RUN npm install -g nodemon
 WORKDIR /RealTimeChatAPI/
 COPY . .
 RUN npm install
-EXPOSE 8000
+EXPOSE 4000
 CMD npm start

@@ -12,7 +12,6 @@ const useGetConversations = () => {
       try {
         const res = await fetch("/api/chatroom/get/all");
         const data = await res.json();
-        console.log(data, res);
         if (data.error) {
           throw new Error(data.error);
         }

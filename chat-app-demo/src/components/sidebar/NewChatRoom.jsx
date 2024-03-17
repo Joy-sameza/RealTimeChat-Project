@@ -1,10 +1,12 @@
 import { useState } from "react";
 import useCreateChatRoom from "../../hooks/useCreateChatRoom";
 import { BsSend } from "react-icons/bs";
+import useGetUsers from "../../hooks/useGetUsers";
 
 const NewChatRoom = () => {
   const [chatName, setChatName] = useState("");
   const { createChatRoom, loading } = useCreateChatRoom();
+  useGetUsers();
 
   const handleSubmit = async (e) => {
     e.preventDefault();

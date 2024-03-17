@@ -51,8 +51,8 @@ const chatRoomRoutes = Router();
  *     responses:
  *      200:
  *        description: request succesful
- *      409:
- *        description: Conflict
+ *      400:
+ *        description: Bad Request
  *      404:
  *        description: Not Found
  *      500:

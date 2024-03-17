@@ -1,14 +1,12 @@
 /* eslint-disable react/prop-types */
 import { useAuthContext } from "../../context/AuthContext";
 import { useSocketContext } from "../../context/SocketContext";
-import useGetUsers from "../../hooks/useGetUsers";
 import { extractTime } from "../../utils/extractTime";
-// import useConversation from "../../zustand/useConversation";
+import useConversation from "../../zustand/useConversation";
 
 const Message = ({ message }) => {
   const { authUser } = useAuthContext();
-  // const { selectedConversation } = useConversation();
-  const { consernedUsers } = useGetUsers();
+  const { consernedUsers } = useConversation();
   const fromMe = message.senderId === authUser.id;
   const formattedTime = extractTime(message.createdAt);
   const chatClassName = fromMe ? "chat-end" : "chat-start";

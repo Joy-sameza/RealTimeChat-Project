@@ -8,6 +8,7 @@ import {
 } from "../directus/directusCrud.js";
 import { sendErrorToClient } from "../utils/sendAndLogError.js";
 import { io } from "../../server.js";
+import { ChatApiError } from "../customErrors/customErrors.js";
 
 /**
  * @description This methode creates a message by making a call to the directuse CRUD unit
@@ -28,12 +29,22 @@ import { io } from "../../server.js";
 export async function createMessage(req: Request, res: Response) {
   try {
     const { body } = req;
-    const message = await createNewMessage(body);
-    res.json({
-      message: "new message created",
-      data: message,
-    });
+    const message = await createNewMessage(body).catch(
+      (error: ChatApiError) => {
+        res.status(error.errorCode).json({
+          error: error.errorCode,
+          data: error,
+        });
+      },
+    );
+
     io.emit("newMessage", message);
+    if (message) {
+      res.status(200).json({
+        message: "new message created",
+        data: message,
+      });
+    }
     return;
   } catch (error) {
     sendErrorToClient(res, "Could not create the message", error);
@@ -63,12 +74,20 @@ export async function getMessagesInChatroomById(req: Request, res: Response) {
   try {
     const { chatRoomId } = req.params;
 
-    const messages = await getMessageAllFomChatroomById(parseInt(chatRoomId));
+    await getMessageAllFomChatroomById(parseInt(chatRoomId))
+      .then((messages) => {
+        res.status(200).json({
+          message: "Message fetched Successfully",
+          data: messages,
+        });
+      })
+      .catch((error: ChatApiError) => {
+        res.status(error.errorCode).json({
+          error: error.errorCode,
+          data: error,
+        });
+      });
 
-    res.json({
-      message: "Message fetched Successfully",
-      data: messages,
-    });
     return;
   } catch (error) {
     sendErrorToClient(
@@ -101,12 +120,19 @@ export async function getMessagesInChatroomById(req: Request, res: Response) {
 export async function getMessagesForUserById(req: Request, res: Response) {
   try {
     const { messageId } = req.params;
-    await getMessageById(parseInt(messageId)).then((message) => {
-      res.json({
-        message: "Message fetched Successfully",
-        data: message,
+    await getMessageById(parseInt(messageId))
+      .then((message) => {
+        res.status(200).json({
+          message: "Message fetched Successfully",
+          data: message,
+        });
+      })
+      .catch((error: ChatApiError) => {
+        res.status(error.errorCode).json({
+          error: error.errorCode,
+          data: error,
+        });
       });
-    });
   } catch (error) {
     sendErrorToClient(res, "Could not get the messages for this user", error);
   }
@@ -129,7 +155,7 @@ export async function getMessagesForUserById(req: Request, res: Response) {
 export async function updateMessageById(req: Request, res: Response) {
   try {
     await updateUserMessageById(req.body).then((updatedMessage) => {
-      res.json({
+      res.status(200).json({
         message: "Message updated successfully",
         data: updatedMessage,
       });
@@ -148,7 +174,7 @@ export async function deleteAUserMessageById(req: Request, res: Response) {
   try {
     const { messageId } = req.params;
     await deleteUsersMessageById(parseInt(messageId)).then(() => {
-      res.json({
+      res.status(200).json({
         message: "message deleted sucessfully",
         data: null,
       });
