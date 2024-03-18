@@ -119,7 +119,7 @@ docker compose up -d --build
 
 ```bash
 # Run docker container
-docker compose up --attache chatapi
+docker compose up --attach chatapi
 ```
 
 if you want to run the react project in the chat-app-demo run the following commands
