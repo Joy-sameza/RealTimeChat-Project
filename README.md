@@ -12,16 +12,8 @@
   - 🥕 [RabbitMQ](#rabbitmq)
   - 🐇 [Directus](#directus)
 - 🗜 [How to use](#examples)
-  - 🔀 [Api endpoints](#endpoints)
 - 🔐 [Authentication Process](#authrequirments)
 - 💯 [Tests](#tests)
-  - 🧪 [Unit and E2E tests](#e2e-test)
-  - 🥒 [Acceptance tests](#acc-test)
-  - 👽 [Mutant testing](#mut-test)
-- 🌿 [Env variables](#env-variables)
-- 🃏 [Folder Structure](#folder-structure)
-- ☑️ [Code analysis and consistency](#code-analysis-and-consistency)
-- 📈 [Releases & Changelog](#versions)
 - ❤️ [Contributors](#contributors)
 - ©️ [License](#license)
 
@@ -225,11 +217,32 @@ you should now bw able to see the chat app server starting on your docker virtua
 Be ware that befor any action you should signup and login. most of the routes are protected from on authenticated users.
 visite the api endpoinds documentation.
 
+### install on your machine and view the [Demo](http://locahost:4000).
+
+- #### User 1
+- create an accout, example
+
+  - full name: John Doe
+  - user name: johndoe
+  - email: johndoe@email.com
+  - password: John2@!.
+  - gender: male
+
+- #### User 2
+- create an accout, example
+
+  - full name: Bobe Doe
+  - user name: bobedoe
+  - email: bobedoe@email.com
+  - password: John2@!.
+  - gender: female
+
+- #### Create a chat room
+- #### Send messages
+
 # <a id="tests"> 💯 Tests </a>
 
 All aveilables test are passing and my be add subsequently
-
-- ## <a id="e2e-test"> 🧪 Unit and E2E tests </a>
 
 # <a id="code-analysis-and-consistency">☑️ Code analysis and consistency</a>
 
