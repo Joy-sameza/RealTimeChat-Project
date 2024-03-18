@@ -113,6 +113,29 @@ docker compose up -d --build
 docker compose up --attache chatapi
 ```
 
+if you want to run the react project in the chat-app-demo run the following commands
+
+- install the required packages locally
+
+```bash
+# Run docker container
+npm run build
+```
+
+- move to the chat-app-demo file
+
+```bash
+# move to the chat-app-demo ditectory
+cd ./chat-app-demo file
+```
+
+- run the react.js app
+
+```bash
+# Run the react app
+npm run start
+```
+
 you should now bw able to see the chat app server starting on your docker virtual mechine and on your terminal. follow the various links to get to know more about the api.
 
 - ## <a id="global-setup"> ⚙ Global setup</a>
@@ -121,14 +144,14 @@ you should now bw able to see the chat app server starting on your docker virtua
 
   ### Development mode
 
-  |           Name            |               Description               | Required |    Default value    |                                   Limitations                                    |
-  | :-----------------------: | :-------------------------------------: | :------: | :-----------------: | :------------------------------------------------------------------------------: |
-  |       `SERVER_HOST`       | Host on which the API will be available |    ❌    |     `127.0.0.1`     |                          If set, can't be empty string                           |
-  |       `SERVER_PORT`       | Port on which the API will be available |    ❌    |       `4000`        |                 If set, must be a number between `0` and `65535`                 |
-  |      `DIRECTUS_HOST`      |            Directus host URL            |    ❌    |     `directus`      |                  If set, must match the directus container name                  |
-  |      `DIRECTUS_PORT`      |           Directus host PORT            |    ❌    |       `8055`        |                  If set, must match the directus container port                  |
-  |  `DIRECTUS_ADMIN_EMAIL`   |           CORS allowed origin           |    ❌    | `admin@example.com` | If set, can't be empty string and should be the same in the docker composer file |
-  | `DIRECTUS_ADMIN_PASWWORD` |           CORS allowed origin           |    ❌    |     `d1r3ctu5`      |                          If set, can't be empty string                           |
+  |           Name            |               Description               | Required |    Default value    |                                   Limitations                                   |
+  | :-----------------------: | :-------------------------------------: | :------: | :-----------------: | :-----------------------------------------------------------------------------: |
+  |       `SERVER_HOST`       | Host on which the API will be available |    ❌    |     `127.0.0.1`     |                          If set, can't be empty string                          |
+  |       `SERVER_PORT`       | Port on which the API will be available |    ❌    |       `4000`        |                If set, must be a number between `0` and `65535`                 |
+  |      `DIRECTUS_HOST`      |            Directus host URL            |    ❌    |     `directus`      |                 If set, must match the directus container name                  |
+  |      `DIRECTUS_PORT`      |           Directus host PORT            |    ❌    |       `8055`        |                 If set, must match the directus container port                  |
+  |  `DIRECTUS_ADMIN_EMAIL`   |           CORS allowed origin           |    ❌    | `admin@example.com` | If set, can't be empty string and must match the directus container admin email |
+  | `DIRECTUS_ADMIN_PASWWORD` |           CORS allowed origin           |    ❌    |     `d1r3ctu5`      | If set, can't be empty string and must match the directus container admin email |
 
 - ## <a id="docker">🐳 Docker installation</a>
 

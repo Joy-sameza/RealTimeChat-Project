@@ -29,7 +29,7 @@ server.use("/api/chatroom", chatRoomRoutes);
 server.use("/api/message", messageRoutes);
 
 server.use(express.static(path.join(__dirname, "chat-app-demo/dist")));
-server.use("*", (req, res) => {
+server.use(/^\/(?!docs).*/, (req, res) => {
   res.sendFile(path.join(__dirname, "chat-app-demo", "dist", "index.html"));
 });
 
