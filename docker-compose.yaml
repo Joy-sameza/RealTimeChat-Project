@@ -17,6 +17,12 @@ services:
       DB_CLIENT: "sqlite3"
       DB_FILENAME: "/directus/database/data.db"
       WEBSOCKETS_ENABLED: "true"
+    healthcheck:
+      test: wget --no-verbose --tries=1 --spider http://localhost:8055/server/health || exit 1
+      start_period: 15s
+      interval: 15s
+      timeout: 15s
+      retries: 3
   chatapi:
     build: ./RealTimeChatAPI
     container_name: chatapi
@@ -27,5 +33,5 @@ services:
       - "/RealTimeChatAPI/node_modules"
     depends_on:
       directus:
-        condition: service_started
+        condition: service_healthy
         restart: true

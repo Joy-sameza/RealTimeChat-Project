@@ -9,7 +9,8 @@
     "dev": "set NODE_ENV=development && nodemon -L --no-warnings --exec node --loader ts-node/esm server.ts",
     "test": "vitest",
     "generate-docs": "npx typedoc ./src",
-    "lint": "npx eslint ."
+    "lint": "npx eslint .",
+    "build": "npm install && npm install --prefix chat-app-demo && npm run --prefix chat-app-demo"
   },
   "keywords": [],
   "author": "Nguezet Kenfack Jordan Junior",

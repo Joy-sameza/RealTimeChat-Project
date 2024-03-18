@@ -9,6 +9,7 @@ import {
 } from "../directus/directusCrud.js";
 import { io } from "../../server.js";
 import { sendErrorToClient } from "../utils/sendAndLogError.js";
+import { ChatApiError } from "../customErrors/customErrors.js";
 
 /**
  * @description Creates a chatroom using the minimal set of values required for a chatroom
@@ -30,16 +31,30 @@ export async function createChatRoom(req: Request, res: Response) {
     const { body } = req;
 
     body.profilePicture = `https://avatar.iran.liara.run/username?username=${body.name.split(" ")[0]}+${body.description.split(" ")[0]}`;
-    const newChatRoom = await createNewChatRoom(body); // Call to directus controlle center for chatroom creation
 
-    io.emit("newRoom", newChatRoom); //Emite chatroom creation even for realtime
+    console.log("1...chatroom");
+    const newChatRoom = await createNewChatRoom(body).catch(
+      (error: ChatApiError) => {
+        res.status(error.errorCode).json({
+          error: error.errorCode,
+          data: error,
+        });
+      },
+    ); // Call to directus controlle center for chatroom creation
+    console.log("2...chatroom");
 
-    res.json({
-      message: "Chatroom created successfully",
-      data: newChatRoom,
-    });
+    if (newChatRoom) {
+      io.emit("newRoom", newChatRoom); //Emite chatroom creation even for realtime
+
+      res.status(200).json({
+        message: "Chatroom created successfully",
+        data: newChatRoom,
+      });
+    }
     return;
   } catch (error) {
+    console.log("3...chatroom");
+
     sendErrorToClient(res, "Could not create new chat room", error);
   }
 }
