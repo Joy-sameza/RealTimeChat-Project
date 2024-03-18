@@ -286,4 +286,4 @@ There is no contributor yet. This is a technical interview project
 
 # <a id="license"> ©️ License </a>
 
-This is the **first** version of the API **[Event Planning API](http://localhost:8000/docs)**. It is still under development.
+This is the **first** version of the API **[Real Time Chat API](http://localhost:4000/docs)**. It is still under development.
