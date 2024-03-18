@@ -1,6 +1,7 @@
 <p align="center">
   <img src="https://github.com/wintercodeNKJJ/RealTimeChat-Project/blob/main/RealTimeChatAPI/public/assets/rtcapi/banner.jpeg?raw=true" width="100%"  alt="logo" style="" />
 </p>
+
 # 📋 Table of Contents
 
 - 📅 [What is this API ?](#what-is-this-api)
@@ -142,7 +143,7 @@ cd ./chat-app-demo file
 
 ```bash
 # Run the react app
-npm run start
+npm run dev
 ```
 
 you should now bw able to see the chat app server starting on your docker virtual mechine and on your terminal. follow the various links to get to know more about the api.
