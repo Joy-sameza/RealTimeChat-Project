@@ -1,7 +1,6 @@
-Create documentation for your API using Swagger. Include details about available
-endpoints, request/response formats, and authentication requirements.
-Include instructions on how to set up and run the Dockerized application.
-
+<p align="center">
+  <img src="https://github.com/wintercodeNKJJ/RealTimeChat-Project/blob/main/RealTimeChatAPI/public/assets/rtcapi/banner.jpeg?raw=true" width="100%"  alt="logo" style="" />
+</p>
 # 📋 Table of Contents
 
 - 📅 [What is this API ?](#what-is-this-api)
@@ -41,19 +40,37 @@ This is a cutting-edge solution designed to bring real-time communication capabi
   - Instant messaging 💬,
   - Group chats 👥,
   - message history 📜,
-    <!-- - online indicators 📝. -->
-    <!-- - read receipts ✅, -->
+
+    <p align="center">
+    <img src="https://github.com/wintercodeNKJJ/RealTimeChat-Project/blob/main/RealTimeChatAPI/public/assets/rtcapi/instant%20chat.JPG?raw=true"  alt="logo" style="" />
+    </p>
 
   - ## Authentication
+
     An authentication system is provide using **jwt** (Jason Web Token) to authenticat users and grant access to the resources. this is done by setting a cookie in the users browser upon registration or login and the token key can also be found in the response to the login or registration. after the registration, the users ar granted a certen level of freedom on the ressources accesed.
+    <p align="center">
+    <img src="https://github.com/wintercodeNKJJ/RealTimeChat-Project/blob/main/RealTimeChatAPI/public/assets/rtcapi/login%20Screen.JPG?raw=true" width="100%"  alt="logo" style="" />
+    </p>
+
+    <p align="center">
+    <img src="https://github.com/wintercodeNKJJ/RealTimeChat-Project/blob/main/RealTimeChatAPI/public/assets/rtcapi/register%20screen.JPG?raw=true" width="100%"  alt="logo" style="" />
+    </p>
+
   - ## Intant messaging
     With the use of web sockets the server listens and emits the `newMessage` event alongside the `messageData` concerned always keepinp up to date all users in each **chatroom/chatgroup** respectivly
+    <p align="center">
+    <img src="https://github.com/wintercodeNKJJ/RealTimeChat-Project/blob/main/RealTimeChatAPI/public/assets/rtcapi/chat%20history.JPG?raw=true"  alt="logo" style="" />
+    </p>
   - ## Chat rooms
     Here, the combination of `http endpoins` and `sockets` allows us to create chat rooms which are stored and can always be retrived even ofter logingout. which sends us to the next feature
+    <p align="center">
+    <img src="https://github.com/wintercodeNKJJ/RealTimeChat-Project/blob/main/RealTimeChatAPI/public/assets/rtcapi/chatrooms.JPG?raw=true" width="100%"  alt="logo" style="" />
+    </p>
   - ## chat history
     The chat history of every chatgroup can always be fetched as it is aveilable for you to use. with the possibelity of viewing them on the nice admin pannel provided by directus. `USERNAME` and `PASSWORD REQUIRED`
-  - ## Online status
-    the server emits the `getOnlineUsers` event alongside the list of users id currently connected to the server so you can always know who is connected or not.
+    <p align="center">
+    <img src="https://github.com/wintercodeNKJJ/RealTimeChat-Project/blob/main/RealTimeChatAPI/public/assets/rtcapi/chat%20history.JPG?raw=true" width="100%"  alt="logo" style="" />
+    </p>
   - ## notifications
     lastly, every action trigers an evet that you can use as you will, the following are the events currently emited and listened by the serve
     - online users `getOnlineUsers`
