@@ -43,7 +43,7 @@ const roomMap: string[] = [];
 io.on("connection", (socket) => {
   const userId = socket.handshake.query.userId?.toString();
   if (userId !== undefined) socketMap.push({ userId, value: socket.id });
-  console.log(socketMap.map((x) => x.userId));
+  // console.log(socketMap.map((x) => x.userId));
   io.emit(
     "getOnlineUsers",
     socketMap.map((x) => x.userId),
@@ -82,11 +82,21 @@ async function startServer() {
       swaggerDocs(server);
       console.info(
         `
-        🗜   db connected    
-        🚀  Server is running!    
-        💬  Real-Time Chat server listening at http://${SERVER_HOST}:${SERVER_PORT}/api
-        📝  Real-Time Chat server documents at http://${SERVER_HOST}:${SERVER_PORT}/docs
-        📚  Real-Time Chat server maintainance documnets at http://${SERVER_HOST}:${SERVER_PORT}/maintainance`,
+  🗜   db connected    
+  🚀  Server is running!
+  │    
+  ├─Docker
+  │   │
+  │   ├─💬  Real-Time Chat server listening at http://${SERVER_HOST}:${SERVER_PORT}/api
+  │   ├─📝  Real-Time Chat server documents at http://${SERVER_HOST}:${SERVER_PORT}/docs
+  │   └─📚  Real-Time Chat server maintainance documnets at http://${SERVER_HOST}:${SERVER_PORT}/maintainance
+  └─localhost
+      │
+      ├─💬  Real-Time Chat server listening at http://localhost:4000/api
+      ├─📝  Real-Time Chat server documents at http://localhost:4000/docs
+      ├─📚  Real-Time Chat server maintainance documnets at http://localhost:4000/maintainance
+      │
+      └─✨  Demon on http://localhost:4000/`,
       );
     });
   } catch (serverConnectionError) {

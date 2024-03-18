@@ -85,7 +85,7 @@ export async function getAChatRoom(req: Request, res: Response) {
 
     const allChatrooms = await getAChatRoomById(parseInt(chatRoomId));
 
-    res.json({
+    res.status(200).json({
       message: "Chatroom retrived Successfully",
       data: allChatrooms,
     });
@@ -117,7 +117,7 @@ export async function getAChatRoom(req: Request, res: Response) {
 export async function getChatRooms(req: Request, res: Response) {
   try {
     const allChatrooms = await getAllChatRooms();
-    res.json({
+    res.status(200).json({
       message: "Chatrooms retrived Successfully",
       data: allChatrooms,
     });
@@ -160,7 +160,7 @@ export async function getChatRoomUsers(req: Request, res: Response) {
   try {
     const { chatRoomId } = req.params;
     const allusers = await getAllUsersInChatRoom(parseInt(chatRoomId));
-    res.json({
+    res.status(200).json({
       message: "Chatrooms retrived Successfully",
       data: allusers,
     });
@@ -190,7 +190,7 @@ export async function updateAChatRoom(req: Request, res: Response) {
     const { id } = req.body;
 
     const allChatrooms = await updateChatRoomById(id, req.body);
-    res.json({
+    res.status(200).json({
       message: "Chatroom updated Successfully",
       data: allChatrooms,
     });
@@ -210,7 +210,7 @@ export async function deleteAChatRoom(req: Request, res: Response) {
 
     const deletedChatRoom = await deleteChatRoomWithId(parseInt(chatRoomId));
 
-    res.json({
+    res.status(200).json({
       message: "ChatRoom deleted",
       data: deletedChatRoom,
     });

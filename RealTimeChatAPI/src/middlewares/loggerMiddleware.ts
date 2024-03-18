@@ -11,16 +11,13 @@ export function loggIncommingRequests(
   res: Response,
   next: NextFunction,
 ) {
-  const timeStamp = new Date();
-  console.log(
-    "src",
-    req.headers.host,
-    " --->|",
-    req.method,
-    "\t --->|",
-    req.url,
-    "\t --->|",
-    timeStamp.toUTCString(),
-  );
+  const start = Date.now();
+  res.on("finish", () => {
+    const duration = Date.now() - start;
+    const finish = new Date();
+    console.log(
+      `[${finish.toLocaleTimeString()}] ${req.method} ${req.originalUrl} ${res.statusCode} ${duration}ms`,
+    );
+  });
   next();
 }

@@ -37,7 +37,7 @@ export const isAdminOrAuthor = (objectName: string) => {
                 if (isOk) {
                   next();
                 } else {
-                  res.json({
+                  res.status(400).json({
                     message:
                       "Can not access this chatRoom!, you are not the Author",
                     data: null,
@@ -54,7 +54,7 @@ export const isAdminOrAuthor = (objectName: string) => {
                 if (isOk) {
                   next();
                 } else {
-                  res.json({
+                  res.status(400).json({
                     message:
                       "Can not access this message!, you are not the Author",
                     data: null,
@@ -71,7 +71,7 @@ export const isAdminOrAuthor = (objectName: string) => {
                 if (isOk) {
                   next();
                 } else {
-                  res.json({
+                  res.status(400).json({
                     message:
                       "Can not access this user!, you are not the Author",
                     data: null,

@@ -96,7 +96,7 @@ After [installing nodejs](#nodejs) you will need to [install docker](#docker) an
 
 ```bash
 # move to the project ditectory
-cd ./Realtimechat project
+cd ./RealTimeChat Project
 ```
 
 - Create the docker image of the project
@@ -110,7 +110,7 @@ docker compose up -d --build
 
 ```bash
 # Run docker container
-docker compose up --attache chatapp
+docker compose up --attache chatapi
 ```
 
 you should now bw able to see the chat app server starting on your docker virtual mechine and on your terminal. follow the various links to get to know more about the api.
@@ -121,31 +121,14 @@ you should now bw able to see the chat app server starting on your docker virtua
 
   ### Development mode
 
-  |      Name       |               Description               | Required | Default value |                   Limitations                    |
-  | :-------------: | :-------------------------------------: | :------: | :-----------: | :----------------------------------------------: |
-  |   `API_HOST`    | Host on which the API will be available |    ❌    |  `127.0.0.1`  |          If set, can't be empty string           |
-  |   `API_PORT`    | Port on which the API will be available |    ❌    |    `4000`     | If set, must be a number between `0` and `65535` |
-  | `DIRECTUS_HOST` |            Directus host URL            |    ❌    |  `directus`   |  If set, must match the directus container name  |
-  | `DIRECTUS_PORT` |           Directus host PORT            |    ❌    |  `undefined`  |  If set, must match the directus container port  |
-  |  `CORS_ORIGIN`  |           CORS allowed origin           |    ❌    |      `*`      |          If set, can't be empty string           |
-
-  ### Using mysql (set if you have a running MySQL Container)
-
-  |        Name         |       Description       | Required | Default value |                 Limitations                 |
-  | :-----------------: | :---------------------: | :------: | :-----------: | :-----------------------------------------: |
-  |   `DATABASE_HOST`   |     MySQL HOST name     |    ✅    |      ❌       | If set, must match the MySQL container name |
-  |   `DATABASE_PORT`   |    MySQL PORT number    |    ✅    |      ❌       | If set, must match the MySQL container port |
-  |   `DATABASE_NAME`   |   MySQL database name   |    ✅    |      ❌       |            Can't be empty string            |
-  | `DATABASE_USERNAME` |   MySQL database user   |    ✅    |      ❌       |            Can't be empty string            |
-  | `DATABASE_PASSWORD` | MySQL database password |    ✅    |      ❌       |            Can't be empty string            |
-
-  ### Set this if you have a running rabbit mq container only
-
-  |      Name       |         Description         | Required | Default value |                  Limitations                   |
-  | :-------------: | :-------------------------: | :------: | :-----------: | :--------------------------------------------: |
-  | `RABBITMQ_CACH` |  Caching RabbitMQ enabled   |    ✅    |    `false`    |       If set, must be `true` or `false`        |
-  | `RABBITMQ_HOST` |  RabbitMQ server host name  |    ✅    |      ❌       | If set, must match the RabbitMQ container name |
-  | `RABBITMQ_PORT` | RabbitMQ server port number |    ✅    |      ❌       |  If set, must match the MySQL container port   |
+  |           Name            |               Description               | Required |    Default value    |                                   Limitations                                    |
+  | :-----------------------: | :-------------------------------------: | :------: | :-----------------: | :------------------------------------------------------------------------------: |
+  |       `SERVER_HOST`       | Host on which the API will be available |    ❌    |     `127.0.0.1`     |                          If set, can't be empty string                           |
+  |       `SERVER_PORT`       | Port on which the API will be available |    ❌    |       `4000`        |                 If set, must be a number between `0` and `65535`                 |
+  |      `DIRECTUS_HOST`      |            Directus host URL            |    ❌    |     `directus`      |                  If set, must match the directus container name                  |
+  |      `DIRECTUS_PORT`      |           Directus host PORT            |    ❌    |       `8055`        |                  If set, must match the directus container port                  |
+  |  `DIRECTUS_ADMIN_EMAIL`   |           CORS allowed origin           |    ❌    | `admin@example.com` | If set, can't be empty string and should be the same in the docker composer file |
+  | `DIRECTUS_ADMIN_PASWWORD` |           CORS allowed origin           |    ❌    |     `d1r3ctu5`      |                          If set, can't be empty string                           |
 
 - ## <a id="docker">🐳 Docker installation</a>
 
@@ -204,9 +187,9 @@ visite the api endpoinds documentation.
 
 # <a id="tests"> 💯 Tests </a>
 
+All aveilables test are passing and my be add subsequently
+
 - ## <a id="e2e-test"> 🧪 Unit and E2E tests </a>
-- ## <a id="acc-test"> 🥒 Acceptance tests </a>
-- ## <a id="mut-test"> 👽 Mutant testing </a>
 
 # <a id="code-analysis-and-consistency">☑️ Code analysis and consistency</a>
 
@@ -242,150 +225,6 @@ visite the api endpoinds documentation.
 
 ```shell
 docker compose up -d --build
-```
-
-# <a id="folder-structure"> 🃏 Folder Structure </a>
-
-Use this gide to easly navigate through the files and folders of the project
-
-```bash
-
-    RealtimeChat Project
-    │
-    ├── RealTimeChatAPI
-    │   │
-    │   ├── .dockerignore
-    │   ├── .env
-    │   ├── .hintrc
-    │   ├── Dockerfile
-    │   ├── package-lock.json
-    │   ├── package.json
-    │   ├── README.md
-    │   ├── server.ts
-    │   ├── swagger.js
-    │   ├── tsconfig.json
-    │   ├── typedoc.json
-    │   ├── vitest.config.ts
-    │   ├── src
-    │   │   ├── controllers
-    │   │   │   ├── eventController.ts
-    │   │   │   ├── registerController.ts
-    │   │   │   └── userController.ts
-    │   │   │
-    │   │   ├── events
-    │   │   │   └── eventEmiter.ts
-    │   │   │
-    │   │   ├── middlewares
-    │   │   │    ├── validationSchema
-    │   │   │    │   ├── eventSchema.ts
-    │   │   │    │   ├── index.ts
-    │   │   │    │   └── userSchema.ts
-    │   │   │    ├── authMiddleware.ts
-    │   │   │    ├── dataValidation.ts
-    │   │   │    ├── index.ts
-    │   │   │    └── verifySignUp.ts
-    │   │   │
-    │   │   ├── models
-    │   │   │    ├── userModel.ts
-    │   │   │    └── eventModel.ts
-    │   │   │
-    │   │   ├── routes
-    │   │   │    ├── eventRegisteringRoutes.ts
-    │   │   │    ├── eventRoutes.ts
-    │   │   │    └── userRoutes.ts
-    │   │   │
-    │   │   ├── services
-    │   │        ├── jobs
-    │   │        │   ├── jobHandler.ts
-    │   │        │   └── jobsConf.ts
-    │   │        ├── emailService
-    │   │        │   ├── mailConfig.ts
-    │   │        │   └── mailSender.ts
-    │   │        └── rabbitMQ
-    │   │            └── rabbitMQjobs.ts
-    │   │
-    │   │
-    │   │
-    │   ├── config
-    │   │   └── config.ts
-    │   ├── docs
-    │   │   ├── assets
-    │   │   │    ├── styles.css
-    │   │   │    .
-    │   │   ├── .nojekyll
-    │   │   ├── index.html
-    │   │   .
-    │   ├── node_modules
-    │   │   ├── ...
-    │   │   .
-    │   ├── public
-    │   ├── test
-    │   │   ├── eventController.test.ts
-    │
-    ├── .gitignore
-    ├── .hintrc
-    └── docker-compose.yaml
-
-```
-
-# <a id="packege-config">🗳 Packages and Configuration files</a>
-
-Hier you have all the packages and configurations necessary to the projects deployment.
-
-## Package.json file
-
-```json
-{
-  "type": "module",
-  "name": "eventplanerapi",
-  "version": "1.0.0",
-  "description": "Event planning api",
-  "main": "index.js",
-  "scripts": {
-    "start": "set NODE_ENV=production && nodemon -L --no-warnings --exec node --loader ts-node/esm server.ts",
-    "dev": "set NODE_ENV=development && nodemon -L --no-warnings --exec node --loader ts-node/esm server.ts",
-    "test": "vitest",
-    "watch-docs": "npx typedoc ./src",
-    "lint": "npx eslint ."
-  },
-  "author": "",
-  "license": "ISC",
-  "devDependencies": {
-    "@types/express": "^4.17.21",
-    "@types/node": "^20.11.21",
-    "@typescript-eslint/eslint-plugin": "7.1.1",
-    "@typescript-eslint/parser": "7.1.1",
-    "eslint": "8.57.0",
-    "eslint-config-prettier": "9.1.0",
-    "eslint-plugin-prettier": "5.1.3",
-    "jsdoc": "^4.0.2",
-    "nodemon": "^3.1.0",
-    "ts-node-dev": "^2.0.0",
-    "typescript": "^5.3.3",
-    "vitest": "^1.3.1"
-  },
-  "dependencies": {
-    "@types/amqplib": "^0.10.5",
-    "@types/bcrypt-nodejs": "^0.0.31",
-    "@types/cors": "^2.8.17",
-    "@types/jsonwebtoken": "^9.0.6",
-    "@types/nodemailer": "^6.4.14",
-    "amqplib": "^0.10.3",
-    "bcrypt-nodejs": "^0.0.3",
-    "bottleneck": "^2.19.5",
-    "cors": "^2.8.5",
-    "dotenv": "^16.4.5",
-    "express": "^4.18.2",
-    "joi": "^17.12.2",
-    "jsonwebtoken": "^9.0.2",
-    "mongoose": "^8.2.0",
-    "nodemailer": "^6.9.11",
-    "swagger-jsdoc": "^6.2.8",
-    "swagger-ui-express": "^5.0.0",
-    "ts-node": "^10.9.2",
-    "typedoc-material-theme": "^1.0.2"
-  }
-}
 ```
 
 # <a id="contributors">❤️ Contributors</a>

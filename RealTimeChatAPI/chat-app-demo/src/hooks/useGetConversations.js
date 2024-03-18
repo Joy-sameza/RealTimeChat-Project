@@ -24,6 +24,7 @@ const useGetConversations = () => {
     };
 
     getConversations();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return { loading, conversations };

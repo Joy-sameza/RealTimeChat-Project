@@ -1,5 +1,7 @@
 import { configDotenv } from "dotenv";
-console.log(process.env.NODE_ENV);
+console.log(`
+    ${process.env.NODE_ENV} mode
+`);
 configDotenv({
   path: process.env.NODE_ENV!.includes("production") ? ".env" : ".env.dev",
 });
