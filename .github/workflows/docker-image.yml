@@ -1,0 +1,55 @@
+name: RealTimeChat-Project CI
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: 18
+
+    - name: Install dependencies
+      run: npm ci
+      working-directory: ./RealTimeChatAPI
+
+    - name: Run linting
+      run: npm run lint
+      working-directory: ./RealTimeChatAPI
+
+    - name: Run tests
+      run: npm test
+      working-directory: ./RealTimeChatAPI
+
+    # - name: Build the Docker image for Directus
+    #   run: docker build . --file Directus/Dockerfile --tag directus:$(date +%s)
+
+    # - name: Build the Docker image for chatApiBackend
+    #   run: docker build . --file chatApiBackend/Dockerfile --tag chat-api:$(date +%s)
+
+    - name: Run docker-compose
+      run: docker-compose -f docker-compose.yaml up --build
+
+  # deploy:
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #   - uses: actions/checkout@v3
+  #   - uses: astappiev/docker-compose-remote-action@master
+  #     name: Docker-Compose Remote Deployment
+  #     with:
+  #       ssh_host: example.com
+  #       ssh_user: ${{ secrets.DEPLOY_USERNAME }}
+  #       ssh_private_key: ${{ secrets.DEPLOY_PRIVATE_KEY }}
+  #       ssh_host_public_key: ${{ secrets.DEPLOY_PUBLIC_KEY }}
+  #       docker_compose_prefix: myapp
