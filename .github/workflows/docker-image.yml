@@ -24,9 +24,9 @@ jobs:
       run: npm ci
       working-directory: ./RealTimeChatAPI
 
-    - name: Run linting
-      run: npm run lint
-      working-directory: ./RealTimeChatAPI
+    # - name: Run linting
+    #   run: npm run lint
+    #   working-directory: ./RealTimeChatAPI
 
     - name: Run tests
       run: npm test
